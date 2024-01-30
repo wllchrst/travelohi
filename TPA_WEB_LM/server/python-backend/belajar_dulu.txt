@@ -1,0 +1,21 @@
+# Convolution Layer 
+
+mencari tau pattern pattern yang penting dari featur dari sebuah input data, jadi pada akhirnya dimension dari image yang kita punya kita tarik kesimpulannya.
+
+
+stride/step = bnyk gerak nya di dimension tersebut 
+filter = size dari filter nya mau berapa 3x3 ? 11 x 11 ? 
+
+filter size dan stride berpengaruh terhadap hasil dimension output nya juga semakin besar filter semakin kecil hasil dimension setelah melakukan convolution pattern
+
+stride/step = makin besar step semakin kecil juga hasil dimension nya.
+
+# Max Pooling Layer 
+
+Menarik informasi yang paling penting dari dimensi yang besar terus di kecilin 
+ada juga window size dari max pooling dan juga ada stride nya juga
+
+
+# Flatten Layer 
+
+Merubah dimensi yang biasanya ada di Model kita menjadi hanya satu dimensi

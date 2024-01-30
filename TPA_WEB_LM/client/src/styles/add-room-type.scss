@@ -1,0 +1,47 @@
+.room-image-container {
+    width: 40%;
+    border-radius: 10px;
+    height: 180px;
+}
+
+.form {
+    width: 100%;
+    input {
+        width: 500px;
+    }
+}
+
+.description-container {
+
+    width: 60%;
+}
+
+.room-types-container {
+    margin-bottom: 2rem;
+    ul {
+        margin-top: 1rem;
+    }
+    li {
+        margin-left: 1rem;
+    }
+}
+
+.rooms-container {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    margin: 1rem 0;
+}
+
+
+.facility-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust the column width as needed */
+    gap: 1rem; /* Adjust the gap between grid items */
+}
+
+.facility-grid-item {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}

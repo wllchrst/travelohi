@@ -1,0 +1,17 @@
+[x] aiport
+[x] airline 
+[x] user 
+[x] location 
+[] flight 
+[] room type
+[x] hotel
+[] review 
+[x] hotel picture
+[] cart hotel ticket
+[] cart flight ticket
+[] rating 
+[] hotel ticket
+[] flight ticket
+[] ticket header
+[x] promo
+[] used promo

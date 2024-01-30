@@ -1,0 +1,155 @@
+
+TPA WEB 23-2 
+
+TRAVELOHI BY HI 22-2
+
+======================
+
+Introduction (important parts)
+
+- REST API
+- swagger (4 example -> put, patch, get, delete)
+- Postgre SQL 
+- GO (Performance, security, design, tools understanding)
+- CSS/SASS/SCSS -> can use thees tools
+- Responsive UI -> Desktop, Tablet, Mobile
+- JWT Token is a must for the login authentication process
+NOTE -> same account cannot login in two different places at the same time
+- Implement Design pattern or infrastructure pattern
+
+Project Requirements ->
+- front end backend database good
+- UI UX good
+- Must Have two themes LIGHT and DARK theme, default theme is light theme
+- proper authentication and authorization
+- Navbar
+- display error kalau ada error 
+- able to change currency
+
+==========================
+PAGES
+
+# Login Page
+- must redirect if the guest enter unautorized page
+- must use email and password to login
+- validate email is not banned
+- [emailname]@[domain].com
+- Users can only login using OTP code (?)
+- must only allow activated account to login
+- MUST CONTAIN LINK TO REGISTER PAGE AND FORGOTTEN PASSWORD 
+- implement reCAPTCHA to avoid spam (?)
+
+# Register Page 
+- Register New Email account and password
+- insert his personal information 
+  * firstname, lastname, date of birth, password, confirmation password,
+    gender, profile picture, personal security question
+  * personal security question -> ada di soal
+  * first name and last name > 5 char (no symbols or numbers)
+  * age >= 13
+  * validate user gender (male or female)
+  * password -> boleh hampir semua liat di soal -> 8 - 30 char
+  * subsribe to news letter using checkbox
+  * email to inform that users account registered successfully
+  * there is a link to login page
+  * reCAPTCHA
+
+# Forgotten Account Page
+- Email -> registered + not banned
+- user security question and make user can answer the securiy question
+- validate security question
+- validate new password -> must not be the same as old password
+- Link to login page
+
+# Navigation Bar Component 
+- display currently logged in user
+- current language and currency for the page.
+- validate the register or logout button
+- display number of ongoing ticket or hotel reservation
+- show the available payment method
+- search Componentn
+
+# Search Component
+- display top 5 serach recommendation from the most search result
+- display 3 recent search history from user
+- search either hotels or airlines
+
+# Footer Component
+- contain 4 useful links to internal websites
+- contain 5 useful links to external websites
+
+# Home Page
+- Display 4 ongoing promos as a slider
+- Why travel with this shit
+- 5 popular flight destination
+- 5 most hotel booked
+
+# Search result page
+- display result from search component
+- paginate the result number of page result 20, 25, 30
+- can filter the result based on rating or price, facilities, transit flight or
+  not
+- Hotel filter -> rating ,price, number of reviews, and room availability
+- Flights sorted based on duration, price, and number of transits
+
+# Detail page for flight ticket
+- display 
+  * airline, airplane code, origin airport, destination airport, flight
+    duration, departure date, arrival date, seat availability
+  * display seat map for easier seat choosing
+  * add on luggage
+  * display total price
+  * buy now or add to cart
+
+# Detail page for hotel booking
+- display
+  * hotel desc, pictures, hotel's names, ratings, addresses, number or reviews,
+    hotel facilities and price per room category
+  * hotel reviews, bisa submit review anonymously -> dont display name and
+    profile picture
+  * user can choose check in and out date
+  * display all rom types prices facilities
+  * display hotel's divided -> clean, comfor, location, service
+  * add to cart buy now
+  
+
+# Cart Page 
+  * statuses for flight ticket and hotel booking
+  * ongoing ticket or booking
+  * flight destinations and hotel books from user's cart
+  * update checkin or checkout
+  * display price per item in the cart
+  * display total price in the cart
+  * g bisa checkout cart yang uda expired
+  * Add promo code (promo code can only be used once)
+  * choose payment method
+  * send payment detail using email to user if payment successfull
+
+# My Ticket Page 
+  * Display all paid ongoing flight tickets or hotel bookings
+  * use search for flight tickets or hotel bookings based on hotel's name
+    airline, flight code
+  * filter based on flight or hotel
+
+
+# history Page
+  * display all paid and expired flight tickets and hotel bookings with
+    INFINITE SCROLLING
+  * use search for flight tickets or hotel bookings based on hotel's name
+  * review rating 
+
+# Login Page 
+• Display all the personal information such as first name, last name, profile picture,
+phone number, email address, address, and subscription to newsletters status.
+• Users can update all the personal information.
+• Users can choose to subscribe to newsletters or unsubscribe to newsletters.
+• Users can add credit cards and bank details.
+• Users can log ou
+
+# admin Page
+• Validate, only admin can access this page.
+• Admin can update ongoing promos.
+• Admin can insert new hotel and airline.
+• Admin can insert new promo code.
+• Admin can view all users and ban the account.
+• Admin can send email to all accounts that subscribe to newsletter.

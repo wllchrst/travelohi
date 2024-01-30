@@ -1,0 +1,67 @@
+
+
+.general-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .general-left-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        p {
+            font-size: large;
+        }
+    }
+
+    .general-right-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 4rem;
+        hr {
+            height: 5rem;
+            transform: rotate(90deg);
+        }
+        .time-information-container {
+            display: flex;
+            gap: 4rem;
+        }
+        .time-container {
+            gap: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            .airport-name {
+                opacity: 70%;
+            }
+        }
+
+        .price-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .price {
+                font-weight: bolder;
+                font-size: xx-large;
+            }
+        }
+    }
+
+    .airline-container{ 
+        width: 60px;
+        height: 100%;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    
+}
+
+#horizontal {
+    rotate: (90deg);
+}

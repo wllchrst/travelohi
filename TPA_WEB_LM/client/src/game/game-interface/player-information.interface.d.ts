@@ -1,0 +1,4 @@
+interface IPlayerInformation  {
+    jumped : boolean
+    
+}

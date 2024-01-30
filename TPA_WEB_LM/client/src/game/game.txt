@@ -1,0 +1,7 @@
+
+[ ] Web Socket
+[ ] Must be registered
+[ ] remove player kalau dc
+[ ] 3 times in 10 minutes
+[ ] 
+[ ] 

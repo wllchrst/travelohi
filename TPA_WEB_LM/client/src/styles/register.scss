@@ -1,0 +1,41 @@
+
+.page-container {
+    height: 100vh;
+}
+
+form { 
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.form-container { 
+    padding: 2rem;
+    width: 400px;
+    border-radius: 6px;
+}
+
+.name-container {
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    input {
+        width: 60%;
+    }
+}
+
+.radio-container {
+    display: flex;
+    label {
+        width: 50%;
+        display: flex;
+        gap: 1rem;
+    }
+}
+
+.link {
+    margin-top: 1rem;
+    text-decoration: none;
+}
+

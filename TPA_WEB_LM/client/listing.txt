@@ -1,0 +1,7 @@
+
+admins
+[] add room type
+[] create flights
+[] ban account
+[] send email to all accounts that subsribe
+[] ongoing promos
