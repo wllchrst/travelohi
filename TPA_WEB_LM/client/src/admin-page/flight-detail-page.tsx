@@ -25,7 +25,7 @@ export default function FlightDetail () {
     return (
         <div className="flight-detail-container">
             {!flight ? <Loading></Loading> : 
-                <FlightDetailCard flight={flight}></FlightDetailCard>
+                <FlightDetailCard inCart={false} flight={flight}></FlightDetailCard>
             }
         </div>
     )

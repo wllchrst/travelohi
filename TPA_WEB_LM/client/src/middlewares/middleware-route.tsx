@@ -13,21 +13,19 @@ import FlightDetail from '../admin-page/flight-detail-page';
 import ManageAccounts from '../admin-page/manage-accounts-page';
 import ManagePromos from '../admin-page/manage-promos';
 import Cart from '../pages/cart-page';
+import TicketPage from '../pages/ticket-page';
+import HistoryPage from '../pages/history-page';
+import ProfilePage from '../pages/profile-page';
 
 export default function MiddlewareRoutes() {
 	const navigate = useNavigate();
-
-	// Passing User Auth From (UserContext.tsx)
 	const { isAuth } = useUserAuth();
 
 	useEffect(() => {
-		if (!isAuth()) {
-			// If not auth then go to '/' (login page at routes)
-			// alert('you are not authenticated')
-			// navigate('/');
-		}
 
-		// --------------------------------
+		if (!isAuth()) {
+			navigate('/');
+		}
 	}, []);
 
 	return (
@@ -35,6 +33,15 @@ export default function MiddlewareRoutes() {
 
 			<Route path="/cart" element={<NavbarWrapper>
 				<Cart></Cart>
+			</NavbarWrapper>}></Route>
+			<Route path="/ticket" element={<NavbarWrapper>
+				<TicketPage></TicketPage>
+			</NavbarWrapper>}></Route>
+			<Route path="/history" element={<NavbarWrapper>
+				<HistoryPage></HistoryPage>
+			</NavbarWrapper>}></Route>
+			<Route path="/profile" element={<NavbarWrapper>
+				<ProfilePage></ProfilePage>
 			</NavbarWrapper>}></Route>
 			{/* ADMIN */}
 			<Route path="/create-flight" element={<NavbarWrapper>
@@ -68,9 +75,7 @@ export default function MiddlewareRoutes() {
 				</AdminMiddleware>
 			</NavbarWrapper>}></Route>
 			<Route path="/view_flight/:id" element={<NavbarWrapper>
-				<AdminMiddleware>
-					<FlightDetail></FlightDetail>
-				</AdminMiddleware>
+				<FlightDetail></FlightDetail>
 			</NavbarWrapper>}></Route>
 			<Route path="/manage-accounts" element={<NavbarWrapper>
 				<AdminMiddleware>

@@ -14,6 +14,7 @@ export default function useFetchCart () {
     const [flightCarts, setCartFlights] = useState<ICartFlightTicketResponse[]>([])
     const [hotelCarts, setHotelCarts] = useState<ICartHotelTicketResponse[]>([])
     const [flightTotalPrice, setflightTotalPrice] = useState(0)
+    const [hotelTotalPrice, sethotelTotalPrice] = useState(0)
     const service = new Service()
 
     async function fetchCart() {
@@ -41,6 +42,15 @@ export default function useFetchCart () {
             counter += flight.Flight.FlightSeats[0].Price
         }
         setflightTotalPrice(counter)
+
+        counter = 0
+        for(const hotel of hotelCarts) {
+            counter += hotel.RoomType.Price
+        }
+
+        console.log(counter);
+
+        sethotelTotalPrice(counter)
     }
 
 
@@ -54,5 +64,5 @@ export default function useFetchCart () {
     }, [flightCarts])
     
 
-    return {isLoading, flightCarts, flightTotalPrice, hotelCarts}
+    return {isLoading, flightCarts, flightTotalPrice, hotelCarts, hotelTotalPrice }
 }

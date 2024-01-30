@@ -11,6 +11,7 @@ import "../../styles/flight-card.scss"
 import Button from "../wrapper/button"
 import { useNavigate } from "react-router-dom"
 import useCurrencyContext from "../../hooks/use-currency-context"
+import PriceWrapper from "../wrapper/price-wrapper"
 
 interface IFlightCard {
     flight : IFlightResponse
@@ -54,7 +55,9 @@ export default function FlightCard ({ flight  } : IFlightCard) {
                     </div>
                     {/* price */}
                     <div className="price-container">
-                        <p className="price">{currencyContext.currencyFront} {flight.FlightSeats[0].Price}</p>
+                        <p className="x-large bolder">
+                            <PriceWrapper price={flight.FlightSeats[0].Price}/>
+                        </p>
                         <p>/ticket</p>
                     </div>
                 </div>

@@ -57,7 +57,8 @@ export default function Login() {
         loginUser().then((result) => {
             if(result) {
                 Cookies.set("token", result)
-                navigate("/home")                
+                navigate("/")
+                window.location.reload()
             }
             else alert("Invalid Credential")
         })

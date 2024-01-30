@@ -20,7 +20,7 @@ export default function ManageAccounts () {
                 url: Paths.BAN_HANDLE_USER,
                 method: Method.PATCH
             }, user.ID).then((result) => {
-                console.log(result.data);
+                if(result.message === 'success') window.location.reload()
             })
         }
     }
@@ -43,7 +43,6 @@ export default function ManageAccounts () {
                                 <td>{user.Email}</td>
                                 <td>{user.Role}</td>
                                 <td className="center " onClick={() => clickHandle(user)}>
-                                    {user.Banned}
                                     {user.Banned == 'false' ? <h2 className="red hover-effects">BAN</h2> : <h2 className="green hover-effects">UNBANNED</h2>}
                                 </td>
                             </tr>

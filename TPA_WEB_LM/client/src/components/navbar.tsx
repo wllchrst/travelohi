@@ -14,20 +14,21 @@ import { useUserAuth } from "../contexts/user-context";
 import useFetchUser from "../hooks/use-fetch-user";
 import useUserLogout from "../hooks/use-logout";
 import styled from "styled-components";
+import useCurrencyContext from "../hooks/use-currency-context";
 
 const unitedState : ICurrency = {
     imagePath: us,
-    type: CurrencyEnum.USD
+    type: "USD"
 }
 const indonesia : ICurrency = {
     imagePath: indo,
-    type: CurrencyEnum.IDR
+    type: "IDR"
 }
 
 export default function Navbar() {
     const [currency, setCurrency] = useState<ICurrency>(unitedState)
+    const { changeCurrency } = useCurrencyContext()
     const [isDropDown, setDropDown] = useState(false)
-
     const NavbarContainer = styled.div`
         background-color: ${(props) => props.theme.secondary};
         color: ${props => props.theme.font};
@@ -90,8 +91,15 @@ export default function Navbar() {
                         </div>
                         {isDropDown ? 
                         <div className="dropdown-content">
-                            <p onClick={() => { setCurrency(unitedState)}}>USD</p>
-                            <p onClick={() => { setCurrency(indonesia)}}>IDR</p>
+                            <p onClick={() => { 
+                                setCurrency(unitedState)
+                                console.log(changeCurrency);
+                                changeCurrency()
+                            }}>USD</p>
+                            <p onClick={() => { 
+                                setCurrency(indonesia)
+                                changeCurrency()
+                            }}>IDR</p>
                         </div>  : <></>}
                     </div>
 
@@ -117,8 +125,9 @@ export default function Navbar() {
                     {/* THEME */}
                 </div>
             </NavbarContainer>
+
             {/* SECOND NAVBAR */}
-            {userContext.user.Role == 'customer' ? 
+            {(userContext.user.Role == 'customer' && userContext.isAuth()) ? 
             <BottomContainer>
                 <div className="links-container">
                     <LinkContainer>
@@ -129,6 +138,18 @@ export default function Navbar() {
                     </LinkContainer>
                     <LinkContainer>
                         <Link className="link-nodeco" to={'/game-join'}>Play Game!!</Link>
+                    </LinkContainer>
+                    <LinkContainer>
+                        <Link className="link-nodeco" to={'/ticket'}>Play Game!!</Link>
+                    </LinkContainer>
+                    <LinkContainer>
+                        <Link className="link-nodeco" to={'/history'}>Play Game!!</Link>
+                    </LinkContainer>
+                    <LinkContainer>
+                        <Link className="link-nodeco" to={'/profile'}>Play Game!!</Link>
+                    </LinkContainer>
+                    <LinkContainer>
+                        <Link className="link-nodeco" to={'/change-password'}>Play Game!!</Link>
                     </LinkContainer>
                 </div>
             </BottomContainer>

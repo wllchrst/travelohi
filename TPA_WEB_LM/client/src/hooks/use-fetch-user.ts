@@ -11,6 +11,7 @@ export default function useFetchUser () {
     const service = new Service()
     const userContext = useUserAuth()
     const fetchUserData = async () => {
+        userContext.setIsFetching(true)
         const token = Cookies.get('token')
         const endpoint : IEndpoint = {
             url : Paths.AUTH + token,
@@ -25,6 +26,7 @@ export default function useFetchUser () {
         else {
             userContext.setAuth(false)
         }
+        userContext.setIsFetching(false)
     }
 
     useEffect(() => {

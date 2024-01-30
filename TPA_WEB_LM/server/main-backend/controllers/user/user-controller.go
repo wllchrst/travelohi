@@ -23,10 +23,20 @@ func LoginUser(context *gin.Context) {
 
 	result := db.First(&user, "email = ?", loginData.Email)
 
+
 	if result.Error != nil {
 		fmt.Println(result.Error)
 		context.JSON(http.StatusUnauthorized, gin.H{
 			"message": "invalid credential",
+		})
+
+		return
+	}
+
+
+	if user.Banned == "true" {
+		context.JSON(404, gin.H {
+			"message" : "Account is Banned",
 		})
 
 		return
@@ -83,34 +93,38 @@ func CreateUser(context *gin.Context) {
 	})
 }
 
-func GetAllUser (context *gin.Context){
+func GetAllUser(context *gin.Context) {
 	var users []models.User
 	db := database.GetDB()
 	db.Where("role LIKE ?", "customer").Find(&users)
 
-	context.JSON(200, gin.H {
+	context.JSON(200, gin.H{
 		"data": users,
 	})
 }
 
-func BanHandleUser (context *gin.Context){
+func BanHandleUser(context *gin.Context) {
 	var user models.User
+	var changed bool
 	userID := context.Param("id")
 	fmt.Println(userID)
 	db := database.GetDB()
-	db.Find(&user, "id = ?", userID)	
+	db.Find(&user, "id = ?", userID)
 
-	if(user.Banned == "false") {
+	if user.Banned == "false" {
 		user.Banned = "true"
-		fmt.Println(user.Banned)
-	}
-	
-	if user.Banned == "true" {
-		user.Banned = "false"
+		fmt.Println("banning user : " + user.Banned)
+		db.Save(&user)
+		changed = true
 	}
 
-	context.JSON(200, gin.H {
-		"data": user,
-		"message" :"success",
+	if user.Banned == "true" && !changed {
+		user.Banned = "false"
+		db.Save(&user)
+	}
+
+	context.JSON(200, gin.H{
+		"data":    user,
+		"message": "success",
 	})
 }

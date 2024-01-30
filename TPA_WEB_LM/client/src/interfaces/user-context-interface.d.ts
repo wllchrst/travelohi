@@ -5,4 +5,6 @@ export interface IUserContext {
     setAuth : React.Dispatch<React.SetStateAction<boolean>>
     isAuth : () => boolean
     setUser: React.Dispatch<React.SetStateAction<IUser>>
+    IsFetching : boolean
+    setIsFetching: React.Dispatch<React.SetStateAction<boolean>>
 }

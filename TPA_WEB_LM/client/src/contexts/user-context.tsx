@@ -10,6 +10,7 @@ type ContentLayout = {
 };
 
 export function UserProvider({ children }: ContentLayout) {
+    const [IsFetching, setIsFetching] = useState(true)
     const [auth, setAuth] = useState(false);
     const [user, setUser] = useState<IUser>({} as IUser)
 
@@ -17,7 +18,7 @@ export function UserProvider({ children }: ContentLayout) {
         return auth;
     }
 
-    const data = { setAuth, isAuth, user, setUser };
+    const data = { setAuth, isAuth, user, setUser, IsFetching, setIsFetching };
 
     return <userContext.Provider value={data}>{children}</userContext.Provider>;
 }

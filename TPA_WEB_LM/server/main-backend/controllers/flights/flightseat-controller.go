@@ -2,7 +2,6 @@ package flights
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +33,6 @@ import (
 // CREATE_FLIGHTSEAT = host + "/create_flightseat"
 
 func CreateFlightSeat(context *gin.Context) {
-	log.Fatal("asdfsadf")
 	var model models.FlightSeat
 	db := database.GetDB()
 

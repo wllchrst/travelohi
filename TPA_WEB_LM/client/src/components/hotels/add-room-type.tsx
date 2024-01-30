@@ -24,6 +24,7 @@ import { useUserAuth } from "../../contexts/user-context"
 import { GreenButton } from "../wrapper/green-button"
 import Modal from "./modal"
 import AddHotelToCart from "./add-to-cart"
+import PriceWrapper from "../wrapper/price-wrapper"
 
 interface IAddRoomTypeCom {
     hotel : IHotelReponse
@@ -92,7 +93,7 @@ export default function AddRoomType ({hotel} : IAddRoomTypeCom) {
                                 <div className="description-container flex flex-col gap-1">
                                     <div className="flex justify-between item-center">
                                         <Title className="bolder">{r.Description}</Title>
-                                        <SubTitle className="red">{currencyFront} {r.Price * currencyMultiplier}</SubTitle>
+                                        <SubTitle className="red"><PriceWrapper price={r.Price}></PriceWrapper></SubTitle>
                                     </div>
                                     <div className="facility-grid">
                                         {r.HotelRoomTypeFacilities.map((rf, index) => (

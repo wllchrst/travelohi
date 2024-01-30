@@ -23,13 +23,25 @@ import BuyNow from "./buy-now-flight";
 import { BlueButton } from "../wrapper/blue-button";
 import { addFlightToCart } from "../../functions/flight";
 import { useUserAuth } from "../../contexts/user-context";
+import Modal from "../hotels/modal";
+import PriceWrapper from "../wrapper/price-wrapper";
 
 interface IFlightDetailCard { 
     flight : IFlightResponse
+    inCart : boolean
 }
 
-export default function FlightDetailCard ({ flight } : IFlightDetailCard) {
+export default function FlightDetailCard ({ flight, inCart } : IFlightDetailCard) {
     const { user } = useUserAuth()
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
     const [isBuyNow, setIsBuyNow] = useState(false)
     const FlightDetailContainer = styled.div`
         margin-top: 2rem;
@@ -88,7 +100,7 @@ export default function FlightDetailCard ({ flight } : IFlightDetailCard) {
                     </div>
                     {/* price */}
                     <div className="price-container">
-                        <p className="price">{currencyContext.currencyFront} </p>
+                        <p className="x-large bolder"><PriceWrapper price={flight.FlightSeats[0].Price}/></p>
                         <p>/ticket</p>
                     </div>
                 </div>
@@ -123,12 +135,13 @@ export default function FlightDetailCard ({ flight } : IFlightDetailCard) {
                 </div>
             </FlightDetailContainer>
             <div className="flex gap-3 mt-1">
-                <GreenButton onClick={() => setIsBuyNow(!isBuyNow)}>Buy Now</GreenButton>
-                <BlueButton onClick={addHandle}>Add To Cart</BlueButton>
+                {inCart ? <></> :<BlueButton onClick={addHandle}>Add To Cart</BlueButton>}
+                <GreenButton onClick={() => openModal()}>Buy Now</GreenButton>
             </div>
             
-            
-            {isBuyNow ? <BuyNow flight={flight}></BuyNow> : <></>}
+            <Modal isOpen={isModalOpen} onClose={closeModal}>   
+                <BuyNow flight={flight}></BuyNow>
+            </Modal> 
         </Container>
     )
 }

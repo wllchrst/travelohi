@@ -37,7 +37,7 @@ export async function createFlight(flight : IFlight, transits : ITransit[], busi
             const seat : IFlightSeat = {
                 FlightSeatID: v4(),
                 FlightID : flight.FlightID,
-                IsAvalaible: false,
+                IsAvalaible: true,
                 SeatNumber: seatNumber,
                 SeatClass: SeatType.Business,
                 Price: business.Price,
@@ -54,7 +54,7 @@ export async function createFlight(flight : IFlight, transits : ITransit[], busi
             const seat : IFlightSeat = {
                 FlightSeatID: v4(),
                 FlightID : flight.FlightID,
-                IsAvalaible: false,
+                IsAvalaible: true,
                 SeatNumber: seatNumber,
                 SeatClass: SeatType.Economy,
                 Price: business.Price,
@@ -70,7 +70,7 @@ export async function createFlight(flight : IFlight, transits : ITransit[], busi
             const seat : IFlightSeat = {
                 FlightSeatID: v4(),
                 FlightID : flight.FlightID,
-                IsAvalaible: false,
+                IsAvalaible: true,
                 SeatNumber: seatNumber,
                 SeatClass: SeatType.FirstClass,
                 Price: business.Price,

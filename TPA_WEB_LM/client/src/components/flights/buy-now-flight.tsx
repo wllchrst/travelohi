@@ -24,7 +24,7 @@ export default function BuyNow ({ flight } : IBuyComponent) {
 
             
             
-            <div className="flex flex-row wrap gap-05 mt-1">
+            <div className="flex flex-row wrap gap-05 mt-1 center">
                 {flight.FlightSeats.map((seat, index) => (
                     <div key={index}>
                         {seat.SeatClass === seatType ? <>

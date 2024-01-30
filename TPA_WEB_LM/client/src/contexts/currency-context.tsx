@@ -18,6 +18,7 @@ export default function ChangeContextProvider ({children} : IChildren) {
     const [currencyMultiplier, setcurrencyMultiplier] = useState(1)
 
     const changeCurrency = () =>  {
+        console.log('changin');
         if(currencyFront == CurrencyEnum.US_FRONT) {
             setcurrencyFront("Rp.")
             setcurrencyMultiplier(14000)

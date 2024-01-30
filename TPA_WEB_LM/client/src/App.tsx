@@ -13,18 +13,21 @@ import ThemeContextProvider from './contexts/theme-context';
 import Hotels from './pages/hotels-page';
 import Flights from './pages/flights-page';
 import GameJoinPage from "./pages/game-join-page";
+import Unauthorized from './components/unauthorized-component';
+import ChangeContextProvider from './contexts/currency-context';
 
 function App() {
   
   return (
     <BrowserRouter>
+      <ChangeContextProvider>
       <ThemeContextProvider>
-        
         <UserProvider>
 
         <MainLayout>
 
           <Routes>
+            <Route path="/page-not-found" element={<Unauthorized/>}></Route>
             <Route path="/game" element={<GamePage/>}></Route>
             <Route path="/login" element={<Login></Login>}></Route>
             <Route path="/register" element={<Register></Register>}></Route>
@@ -49,6 +52,8 @@ function App() {
 
       </UserProvider>
       </ThemeContextProvider>
+      </ChangeContextProvider>
+      
     </BrowserRouter>
   );
 }
