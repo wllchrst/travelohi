@@ -16,6 +16,7 @@ import Cart from '../pages/cart-page';
 import TicketPage from '../pages/ticket-page';
 import HistoryPage from '../pages/history-page';
 import ProfilePage from '../pages/profile-page';
+import CheckLocationPage from '../pages/check-location-page';
 
 export default function MiddlewareRoutes() {
 	const navigate = useNavigate();
@@ -43,7 +44,11 @@ export default function MiddlewareRoutes() {
 			<Route path="/profile" element={<NavbarWrapper>
 				<ProfilePage></ProfilePage>
 			</NavbarWrapper>}></Route>
-			{/* ADMIN */}
+			<Route path="/check_location" element={<NavbarWrapper>
+				<CheckLocationPage></CheckLocationPage>
+			</NavbarWrapper>}></Route>
+
+			{/* ! ADMIN */}
 			<Route path="/create-flight" element={<NavbarWrapper>
 				<AdminMiddleware>
 					<CreateFlight></CreateFlight>
@@ -65,9 +70,7 @@ export default function MiddlewareRoutes() {
 				</AdminMiddleware>
 			</NavbarWrapper>}></Route>
 			<Route path="/view-hotel/:id" element={<NavbarWrapper>
-				<AdminMiddleware>
-					<HotelDetail></HotelDetail>
-				</AdminMiddleware>
+				<HotelDetail></HotelDetail>
 			</NavbarWrapper>}></Route>
 			<Route path="/view_flight" element={<NavbarWrapper>
 				<AdminMiddleware>
@@ -87,6 +90,7 @@ export default function MiddlewareRoutes() {
 					<ManagePromos></ManagePromos>
 				</AdminMiddleware>
 			</NavbarWrapper>}></Route>
+			
 		</Routes>
 	);
 }

@@ -2,12 +2,14 @@ from pre_process import train_ds, val_ds, test_ds
 from tensorflow.keras import models
 from tensorflow.keras import layers
 import tensorflow as tf
+
 LABELS = train_ds.class_names
 
 for x, y in train_ds.take(1):
     break
 
 INPUT_SHAPE = x.shape[1:]
+
 MODEL = models.Sequential(
     [
         layers.Input(shape=INPUT_SHAPE),

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nosurprisesplz/tpa-web-backend/database"
 	"github.com/nosurprisesplz/tpa-web-backend/models"
+	"github.com/nosurprisesplz/tpa-web-backend/utils"
 )
 
 // API For the cartflighttickets
@@ -37,18 +38,28 @@ func CreateCartFlightTicket(context *gin.Context) {
 
 	context.Bind(&model)
 
-	result := db.Create(&model)
+	err := utils.ValidateCartFlightTicket(model)
 
-	if result.Error != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Failed creating data",
-		})
+	if err != nil {
+		context.JSON(http.StatusBadRequest, utils.Response(err.Error(), false))
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"message": "success",
-	})
+	updateResult := UpdateFlightSeat(model.FlightSeatRefer)
+
+	if updateResult != nil {
+		context.JSON(http.StatusBadRequest, utils.Response(updateResult.Error(), false))
+		return
+	}
+
+	result := db.Create(&model)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
+		return
+	}
+
+	context.JSON(http.StatusOK, utils.Response("mantap", true))
 }
 
 func UpdateCartFlightTicket(context *gin.Context) {
@@ -75,21 +86,16 @@ func UpdateCartFlightTicket(context *gin.Context) {
 }
 
 func DeleteCartFlightTicket(context *gin.Context) {
-	var model models.CartFlightTicket
 	db := database.GetDB()
 	id := context.Param("id")
-	result := db.Delete(&models.CartFlightTicket{}, "id = ?", id)
+	result := db.Delete(&models.CartFlightTicket{}, "cart_id = ?", id)
 
 	if result.Error != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Failed getting data",
-		})
+		context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"data": model,
-	})
+	context.JSON(http.StatusOK, utils.Response("Deleted cart flight ticket", true))
 }
 
 func ViewCartFlightTicket(context *gin.Context) {
@@ -112,12 +118,12 @@ func ViewCartFlightTicket(context *gin.Context) {
 
 func ViewCartFlightTicketByID(context *gin.Context) {
 	var model []models.CartFlightTicket
-	
+
 	db := database.GetDB()
 	id := context.Param("id")
 
 	// ! Ganti yang di dalam string rating_id tergantung dengan primary key yang ada di database
-	result := db.Preload("User").Preload("Flight").Preload("Flight.Airline").Preload("Flight.AirportDestination").Preload("Flight.AirportOrigin").Preload("Flight.Transits").Preload("Flight.FlightSeats").Find(&model, "user_refer= ?", id)
+	result := db.Preload("User").Preload("Flight").Preload("Flight.Airline").Preload("Flight.AirportDestination").Preload("Flight.AirportOrigin").Preload("Flight.Transits").Preload("Flight.FlightSeats").Preload("FlightSeat").Find(&model, "user_refer= ?", id)
 
 	if result.Error != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{

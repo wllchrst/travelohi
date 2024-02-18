@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { FormEvent, useState } from "react"
 import { useUserAuth } from "../../contexts/user-context"
 import { addHotelToCart } from "../../functions/hotel"
 import IHotelReponse from "../../interfaces/hotel-response-interface"
@@ -17,10 +17,14 @@ export default function AddHotelToCart ({ hotel, roomType } : Props) {
     const {user} = useUserAuth()
     const [checkInDate, setCheckIndate] = useState<Date>()
     const [checkOutDate, setCheckOutDate] = useState<Date>()
+
     const clickHandle = () => {
         if(checkInDate && checkOutDate) addHotelToCart(hotel, roomType, user, checkInDate, checkOutDate).then((result) => {
             if(result) window.location.reload()
         })
+        else {
+            alert("you must input all check in and check out date");
+        }
     }
     return (
         <div className="flex flex-col gap-1">

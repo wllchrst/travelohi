@@ -5,3 +5,5 @@ type Facility struct {
 	HotelID             string
 	FacilityDescription string
 }
+
+

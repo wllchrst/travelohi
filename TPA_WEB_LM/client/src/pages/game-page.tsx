@@ -6,9 +6,11 @@ import { Server } from "../game/server";
 import { Game } from "../game/game";
 import Button from "../components/wrapper/button";
 import { Title } from "../components/wrapper/title";
+import { useUserAuth } from "../contexts/user-context";
 
 
 export default function GamePage () {
+    const { user } = useUserAuth() 
     const canvas = useRef<HTMLCanvasElement>(null)
     const [ID, setID] = useState(-1)
     const [isStartGame, setIsStartGame] = useState(false)
@@ -26,8 +28,8 @@ export default function GamePage () {
     useEffect(() => {
         if(canvas.current && ID >= 0 && isStartGame == true) {
             console.log(ID);
-            startGame(canvas.current, ID)
-        }
+            startGame(canvas.current, ID, user)
+    }
 
         return () => {
             console.log('STOPPING GAME');

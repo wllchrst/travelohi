@@ -15,3 +15,8 @@ type CartHotelTicket struct {
 	Hotel         Hotel         `gorm:"foreignKey:HotelRefer"`
 	User          User          `gorm:"foreignKey:UserRefer"`
 }
+
+type UpdateHotelCart struct {
+	CheckInDate  time.Time
+	CheckOutDate time.Time
+}

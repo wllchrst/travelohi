@@ -7,6 +7,7 @@ import { Method } from "../enums/method-enum";
 export default function useGetAllUser(){
     const [users, setUsers] = useState<IUser[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [change, setChange] = useState(0)
     const service = new Service()
     async function getUser (){
         const response = await service.request<IUser[]>({
@@ -20,7 +21,7 @@ export default function useGetAllUser(){
 
     useEffect(() => {
         getUser()
-    }, [])
+    }, [change])
 
-    return {users, isLoading}
+    return {users, isLoading, setChange ,change}
 }

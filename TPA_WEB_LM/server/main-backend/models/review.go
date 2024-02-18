@@ -1,8 +1,9 @@
 package models
 
 type Review struct {
-	UserID            string `gorm:"primaryKey"`
-	HotelID           string `gorm:"primaryKey"`
+	ReviewID          string `gorm:"primaryKey"`
+	UserID            string
+	HotelID           string
 	ReviewDescription string
-	IsAnonymous       int
+	IsAnonymous       bool
 }

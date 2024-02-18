@@ -115,10 +115,10 @@ export default function Navbar() {
                         <div className="flag-container center">
                             <img src={userContext.user.ProfilePictureLink} alt="" />
                         </div>
-                        <p>{userContext.user.Email}</p>
+                        <Link to={'/profile'}>{userContext.user.Email}</Link>
                         <div>
                             <img onClick={() => {
-                                useUserLogout()
+                                useUserLogout(userContext.user.ID)
                             }} className="logout-icon icon" src={logOutIcon} alt="" />
                         </div>
                     </div>}
@@ -140,16 +140,13 @@ export default function Navbar() {
                         <Link className="link-nodeco" to={'/game-join'}>Play Game!!</Link>
                     </LinkContainer>
                     <LinkContainer>
-                        <Link className="link-nodeco" to={'/ticket'}>Play Game!!</Link>
+                        <Link className="link-nodeco" to={'/ticket'}>My Ticket</Link>
                     </LinkContainer>
                     <LinkContainer>
-                        <Link className="link-nodeco" to={'/history'}>Play Game!!</Link>
+                        <Link className="link-nodeco" to={'/history'}>History</Link>
                     </LinkContainer>
                     <LinkContainer>
-                        <Link className="link-nodeco" to={'/profile'}>Play Game!!</Link>
-                    </LinkContainer>
-                    <LinkContainer>
-                        <Link className="link-nodeco" to={'/change-password'}>Play Game!!</Link>
+                        <Link className="link-nodeco" to={'/check_location'}>Check Location</Link>
                     </LinkContainer>
                 </div>
             </BottomContainer>

@@ -1,30 +1,19 @@
-import { useParams } from "react-router-dom";
 import IFlightResponse from "../../interfaces/flight-response-interface";
 import { Container } from "../wrapper/container";
-import { Title } from "../wrapper/title";
-import locationIcon from "../../assets/locationIcon.png"
-import destinationIcon from "../../assets/destinationicon.png"
-import arrowIcon from "../../assets/arrowIcon.png"
 import { FlexGap } from "../wrapper/FlexGap";
-import { SubTitle } from "../wrapper/subtitle";
 import "../../styles/flight-detail-card.scss"
-import { dateConvert, timeConvert } from "../../game/util";
+import { convertMinutesToHoursAndMinutes, dateConvert, timeConvert } from "../../game/util";
 import { HotelImageDiv } from "../wrapper/DivForImage";
 import useCurrencyContext from "../../hooks/use-currency-context";
 import styled from "styled-components";
-import Select from "../wrapper/select";
-import { SeatType } from "../../enums/seat-type-enum";
 import { useState } from "react";
 import { GreenButton } from "../wrapper/green-button";
-import { AvailableFlight } from "./available-button";
-import { NotAvailableButton } from "./not-available-button";
-import Button from "../wrapper/button";
 import BuyNow from "./buy-now-flight";
 import { BlueButton } from "../wrapper/blue-button";
-import { addFlightToCart } from "../../functions/flight";
 import { useUserAuth } from "../../contexts/user-context";
 import Modal from "../hotels/modal";
 import PriceWrapper from "../wrapper/price-wrapper";
+import AddFlightToCart from "./add-flight-to-cart";
 
 interface IFlightDetailCard { 
     flight : IFlightResponse
@@ -34,14 +23,17 @@ interface IFlightDetailCard {
 export default function FlightDetailCard ({ flight, inCart } : IFlightDetailCard) {
     const { user } = useUserAuth()
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCartModalOpen, setCartIsModalOpen] = useState(false);
 
     const openModal = () => {
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
+        setCartIsModalOpen(false)
         setIsModalOpen(false);
     };
+
     const [isBuyNow, setIsBuyNow] = useState(false)
     const FlightDetailContainer = styled.div`
         margin-top: 2rem;
@@ -67,12 +59,6 @@ export default function FlightDetailCard ({ flight, inCart } : IFlightDetailCard
         } 
     `
 
-    const addHandle = () => {
-        if(!confirm("Are you sure")) return
-        addFlightToCart(user, flight).then((result) => {
-            if(result) window.location.reload()
-        })
-    }
     const currencyContext = useCurrencyContext()
     return (
         <Container className="p-3">
@@ -83,7 +69,10 @@ export default function FlightDetailCard ({ flight, inCart } : IFlightDetailCard
                             <img src={flight.Airline.PictureLink} alt="" />
                         </HotelImageDiv>
                     </div>
-                    <p>Lion Air</p>
+                    <div className="flex-col gap-1 flex">
+                        <p>{flight.Airline.AirlineName}</p>
+                        <p className="hover-effects smaller">{flight.AirplaneCode}</p>
+                    </div>
                 </div>
                 <div className="general-right-container">
                     {/* time */}
@@ -92,12 +81,13 @@ export default function FlightDetailCard ({ flight, inCart } : IFlightDetailCard
                             <p>{timeConvert(flight.DepartureTime)}</p>
                             <p className="airport-name">{flight.AirportOrigin.AirportName}</p>
                         </div>
-                        <hr />
+                        <hr className="w-0"/>
                         <div className="time-container">
                             <p>{timeConvert(flight.DepartureTime, flight.ArrivalTime)}</p>
                             <p className="airport-name">{flight.AirportDestination.AirportName}</p>
                         </div>
                     </div>
+                    <p>{convertMinutesToHoursAndMinutes(flight.ArrivalTime)}</p>
                     {/* price */}
                     <div className="price-container">
                         <p className="x-large bolder"><PriceWrapper price={flight.FlightSeats[0].Price}/></p>
@@ -111,7 +101,7 @@ export default function FlightDetailCard ({ flight, inCart } : IFlightDetailCard
 
                     <div className="information-container-detail">
                         <p className="desc-p">ORIGIN</p>
-                        <p className="time">{dateConvert(flight.DepartureTime)}</p>
+                        <p className="time">{dateConvert(flight.DepartureTime)}, {timeConvert(flight.DepartureTime)}</p>
                         <p className="airport-name">{flight.AirportOrigin.AirportName}</p>
                     </div>
                     <div className="information-container-detail">
@@ -119,9 +109,9 @@ export default function FlightDetailCard ({ flight, inCart } : IFlightDetailCard
                         {flight.Transits.map((transit, index) => (
                             <div key={index}>
                                 <FlexGap>
-                                    <p className="time">{dateConvert(transit.From)}</p>
+                                    <p className="time">{dateConvert(transit.From)}, {timeConvert(flight.DepartureTime)}</p>
                                     <hr className="w-3"/>
-                                    <p className="time">{dateConvert(transit.Until)}</p>
+                                    <p className="time">{dateConvert(transit.Until)}, {timeConvert(flight.DepartureTime)}</p>
                                 </FlexGap>
                                 <p className="airport-name">{transit.AirportTransit.AirportName}</p>
                             </div>
@@ -129,15 +119,22 @@ export default function FlightDetailCard ({ flight, inCart } : IFlightDetailCard
                     </div>    
                     <div className="information-container-detail">
                         <p className="desc-p">DESTINATION</p>
-                        <p className="time">{dateConvert(flight.DepartureTime)}</p>
+                        <p className="time">{dateConvert(flight.DepartureTime)}, {timeConvert(flight.DepartureTime, flight.ArrivalTime)}</p>
                         <p className="airport-name">{flight.AirportDestination.AirportName}</p>
                     </div>
                 </div>
             </FlightDetailContainer>
-            <div className="flex gap-3 mt-1">
-                {inCart ? <></> :<BlueButton onClick={addHandle}>Add To Cart</BlueButton>}
+
+            {user.Role != "admin" ? <div className="flex gap-3 mt-1">
+                {inCart ? <></> :<BlueButton onClick={() => {
+                    setCartIsModalOpen(true)
+                }}>Add To Cart</BlueButton>}
                 <GreenButton onClick={() => openModal()}>Buy Now</GreenButton>
-            </div>
+            </div> : <></>}
+            
+            <Modal isOpen={isCartModalOpen} onClose={closeModal}>
+                <AddFlightToCart flight={flight}></AddFlightToCart>
+            </Modal>
             
             <Modal isOpen={isModalOpen} onClose={closeModal}>   
                 <BuyNow flight={flight}></BuyNow>

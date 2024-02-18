@@ -9,4 +9,6 @@ type Hotel struct {
 	Location        Location
 	HotelPictures   []HotelPicture
 	HotelFacilities []Facility
+	Ratings         []Rating
+	Reviews         []Review
 }

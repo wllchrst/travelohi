@@ -17,6 +17,7 @@ import { getTheFile } from "../game/util"
 import Button from "../components/wrapper/button"
 import{ createHotel, createImage } from "../functions/hotel"
 import IHotel from "../interfaces/hotel-interface"
+import { useNavigate } from "react-router-dom"
 
 export default function CreateHotel () {
     const [locations, setLocations] = useState<ILocation[]>([])
@@ -27,6 +28,7 @@ export default function CreateHotel () {
     const [facilities, setFacilities] = useState<string[]>([])
     const [hotel, setHotel] = useState<IHotel>({} as IHotel)
     const service = new Service()
+    const navigate = useNavigate()
     
     useEffect(() => {
         const endpoint : IEndpoint ={
@@ -51,9 +53,12 @@ export default function CreateHotel () {
         event.preventDefault()
         if(first && second && third) createImage(first, second, third).then((result) => {
             createHotel(hotel, result, facilities).then((result) => {
-                console.log(result);
+                if(result) navigate("/view-hotel")
             })
         })
+        else {
+            alert("You need to input all fields")
+        }
     }
     return (
         <Center className="">

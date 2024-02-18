@@ -58,9 +58,9 @@ export default function CreateFlight () {
 
     const submitHandle = async (event : FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-
-        createFlight(flight, transit, businessSeat, economy, firstClassSeat).then((result) => {
-            console.log(result);
+        createFlight(flight, transit, businessSeat, economy, firstClassSeat).then((response) => {
+            console.log(response);
+            if(response) window.location.reload()
         })
     }
 
@@ -95,17 +95,17 @@ export default function CreateFlight () {
                             <option key={index} value={airport.AirportCode}>{airport.AirportName}</option>
                         ))}
                     </Select>
+                    <Input placeholder="Airplane Code" name="AirplaneCode" onChange={changeHandle}/>
                     <FlexGap>
                         <p>Departure</p> 
                         <Input name="DepartureTime" type="datetime-local" onChange={(event) => {
-                            console.log(new Date(event.target.value));
                             setFlight({
                                 ...flight,
                                 DepartureTime: new Date(event.target.value)
                                 })
                         }}></Input>
                     </FlexGap>
-                    <Input name="ArrivalTime" type="number" placeholder="Duration" onChange={(event) => {
+                    <Input name="ArrivalTime" type="number" placeholder="Duration (Minute)" onChange={(event) => {
                         setFlight({
                             ...flight,
                             ArrivalTime: parseInt(event.target.value)

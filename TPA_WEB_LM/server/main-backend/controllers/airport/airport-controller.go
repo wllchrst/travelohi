@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nosurprisesplz/tpa-web-backend/database"
 	"github.com/nosurprisesplz/tpa-web-backend/models"
+	"github.com/nosurprisesplz/tpa-web-backend/utils"
 )
 
 func GetAllAirport(context *gin.Context) {
@@ -28,25 +29,51 @@ func GetAllAirline(context *gin.Context) {
 	db := database.GetDB()
 	db.Find(&airlines)
 
-	context.JSON(200, gin.H {
+	context.JSON(200, gin.H{
 		"data": airlines,
 	})
 }
 
-func CreateAirline (context *gin.Context){
+func CreateAirline(context *gin.Context) {
 	var airline models.Airline
+	var airlines []models.Airline
 	db := database.GetDB()
 	context.Bind(&airline)
-	fmt.Println(airline)
-	result := db.Create(&airline)
+
+	result := db.Where("airline_name = ? OR airline_code = ?", airline.AirlineName, airline.AirlineCode).Find(&airlines)
 
 	if result.Error != nil {
-		context.JSON(http.StatusInternalServerError, gin.H {
-			"message": "failed creating airline",
-		})
+		context.JSON(http.StatusBadRequest, utils.Response("Airline Name or Airline Code is being use", false))
+		return
 	}
 
-	context.JSON(http.StatusOK, gin.H {
-		"data": true,
+	if len(airlines) > 0 {
+		context.JSON(http.StatusBadRequest, utils.Response("Airline name or airline code already registered", false))
+		return
+	}
+
+	err := utils.ValidateAirline(airline)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	result = db.Create(&airline)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"message": result.Error.Error(),
+			"success": false,
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "mantap",
 	})
 }

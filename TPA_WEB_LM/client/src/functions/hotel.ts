@@ -12,27 +12,45 @@ import IHotelRoomType from "../interfaces/hotel-room-type-interface";
 import IHotelRoomTypeFacility from "../interfaces/room-type-facility-interface";
 import { IUser } from "../interfaces/user-interface";
 import ICartHotelTicket from "../interfaces/cart-hotel-interface";
+import UpdateHotelCart from "../interfaces/update-hotel-interface";
+import ICartHotelTicketResponse from "../interfaces/cart-hotel-response-interface";
+import IHotelTicket from "../interfaces/hotel-ticket-interface";
 
 const service = new Service()
 
 export async function createHotel(hotel : IHotel, pictures : string[], facilities : string[]){
     try {
         hotel.HotelID = v4()
-        await service.request({
+        const response = await service.request({
             url: Paths.CREATE_HOTEL,
             method: Method.POST
         }, '', hotel)
+        console.log(response);
 
-        for(const picture of pictures) {
+        if(!response.success) {
+            alert(response.message)
+            return false
+        }
+        const len = pictures.length
+        console.log(len);
+
+        for(let i = 0; i < len; i++) {
+            console.log('CREATING');
             const hotelPicture : IHotelPicture = {
                 HotelID: hotel.HotelID,
                 PictureID: v4(),
-                PictureLink: picture
+                PictureLink: pictures[i]
             } 
-            await service.request({
+            const response =  await service.request({
                     url: Paths.CREATE_HOTEL_PICTURE,
                     method: Method.POST
                 }, '', hotelPicture)
+            
+            if(!response.success) {
+                console.log(response);
+                alert(response.message)
+                return false
+            }
         }
 
         for(const facility of facilities) {
@@ -41,10 +59,15 @@ export async function createHotel(hotel : IHotel, pictures : string[], facilitie
                 FacilityDescription: facility,
                 FacilityID: v4()
             } 
-            await service.request({
+            const response = await service.request({
                     url: Paths.CREATE_HOTEL_FACILITY,
                     method: Method.POST
                 }, '', hotelFacility)
+
+            if(!response.success) {
+                alert(response.message)
+                return false
+            }
         }
         return true
     } catch (error) {
@@ -68,28 +91,46 @@ export async function createImage(first : File, second : File, third : File){
 }
 
 export async function createRoomType (hotel : IHotelReponse, roomType : IHotelRoomType, facilities : string[]){
-    roomType.HotelID = hotel.HotelID
-    roomType.RoomTypeID = v4()
 
-    const response = await service.request({
-        url: Paths.CREATE_HOTEL_ROOM_TYPE,
-        method: Method.POST
-    }, '', roomType)
+    try {
+        roomType.HotelID = hotel.HotelID
+        roomType.RoomTypeID = v4()
 
-    for(const facility of facilities) {
-        const fac : IHotelRoomTypeFacility= {
-            RoomTypeFacilityID: v4(),
-            RoomTypeRefer: roomType.RoomTypeID,
-            FacilityID: facility
-        }
-        await service.request({
-            url: Paths.CREATE_HOTELROOMTYPEFACILITY,
+        const response = await service.request({
+            url: Paths.CREATE_HOTEL_ROOM_TYPE,
             method: Method.POST
-        }, '', fac)
-    }
+        }, '', roomType)
 
-    if(response.message === 'success') return true
-    return false
+        console.log(response);
+
+        if(!response.success) {
+            alert(response.message)
+            return false
+        }
+
+        for(const facility of facilities) {
+            const fac : IHotelRoomTypeFacility= {
+                RoomTypeFacilityID: v4(),
+                RoomTypeRefer: roomType.RoomTypeID,
+                FacilityID: facility
+            }
+            const response = await service.request({
+                url: Paths.CREATE_HOTELROOMTYPEFACILITY,
+                method: Method.POST
+            }, '', fac)
+
+            if(!response.success) {
+                alert(response.message)
+                return response.success
+            }
+        }   
+        return true
+    } catch (error) {
+        console.log(error);    
+        return false
+    }
+    
+
 }
 
 export async function deleteRoomType (roomType : IHotelRoomType) {
@@ -123,6 +164,71 @@ export async function addHotelToCart(hotel : IHotelReponse, roomType : IHotelRoo
         method: Method.POST
     }, '', cart)
 
-    if(result.message === 'success') return true
-    return false
+    if(result.success) return true
+    else {
+        alert(result.message)
+        return false
+    }
+}
+
+export async function updateHotelCart(updateHotel : UpdateHotelCart, cartID : string) {
+    const response = await service.request({
+        url: Paths.UPDATE_CARTHOTELTICKET,
+        method: Method.PATCH
+    }, cartID, updateHotel)
+
+    if(response.success) return true
+    else {
+        alert(response.message)
+        return false
+    }
+}
+
+export async function buyHotelTicket(cart : ICartHotelTicketResponse, method : string){
+    const ticket : IHotelTicket = {
+        TicketID: v4(),
+        CheckInDate: cart.CheckInDate,
+        CheckOutDate: cart.CheckOutDate,
+        HotelRefer: cart.HotelRefer,
+        Method: method,
+        RoomTypeRefer: cart.RoomTypeRefer,
+        UserRefer: cart.UserRefer
+    }
+
+    const response = await service.request({
+        url: Paths.CREATE_HOTELTICKET,
+        method: Method.POST
+    }, cart.CartID, ticket)
+
+
+    if(response.success) return true 
+    else {
+        alert(response.message)
+        return false
+    }
+}
+
+export async function buyNowHotel(hotel : IHotelReponse, method : string, roomType : IHotelRoomType, checkIn : Date, checkOut : Date, user : IUser){
+    const ticket : IHotelTicket = {
+        TicketID: v4(),
+        CheckInDate: checkIn,
+        CheckOutDate: checkOut,
+        HotelRefer: hotel.HotelID,
+        Method: method,
+        RoomTypeRefer: roomType.RoomTypeID,
+        UserRefer: user.ID
+    }
+
+    const response = await service.request({
+        url: Paths.BUY_HOTEL,
+        method: Method.POST
+    }, '', ticket)
+
+    console.log(response);
+
+    if(response.success) return true
+    else {
+        alert(response.message)
+        return false
+    }
 }

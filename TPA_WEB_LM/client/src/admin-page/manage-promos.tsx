@@ -14,12 +14,27 @@ import Loading from "../components/wrapper/loading";
 import { HotelImageDiv } from "../components/wrapper/DivForImage";
 import { FlexGap } from "../components/wrapper/FlexGap";
 import trashIcon from "../assets/trashIcon.png"
+import Modal from "../components/hotels/modal";
+import UpdatePromo from "../components/promo/update-promo";
+import { BlueButton } from "../components/wrapper/blue-button";
+import { RedButton } from "../components/wrapper/red-button";
 
 
 export default function ManagePromos () {
     const { promos, isLoading } = useFetchPromos()
+    const [currentPromo, setCurrentPromo] = useState<IPromo>()
     const [promo, setPromo] = useState<IPromo>({} as IPromo)
     const [file, setFile] = useState<File>()
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
 
     const changeHandle = (event : ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setPromo({
@@ -33,6 +48,9 @@ export default function ManagePromos () {
         if(file) createPromo(promo, file).then((result) => {
             if(result) window.location.reload()
         })
+        else {
+            alert("You must input all fields")
+        }
     }
 
 
@@ -44,15 +62,22 @@ export default function ManagePromos () {
                     {isLoading ? <Loading></Loading> : 
                     <>
                         {promos.map((promo, index) => (
-                            <div key={index} className="promo-card-container gap-3">
+                            <Container key={index} className="p-2 promo-card-container gap-3 flex flex-col">
                                 <div className="w-4k h-2k image-container">
                                     <HotelImageDiv> <img src={promo.PictureLink}></img> </HotelImageDiv>
                                 </div>
-                                <SubTitle className="mt-1">Promo Code : {promo.PromoCode}</SubTitle>
-                                <img onClick={() => deletePromo(promo).then((result) => {
-                                    console.log(result);
-                                })} className="w-3 h-3" src={trashIcon}></img>
-                            </div>
+                                <div className="flex flex-col gap-1">
+                                    <SubTitle className="">Promo Code : {promo.PromoCode}</SubTitle>
+                                    <BlueButton onClick={() => {
+                                        setCurrentPromo(promo)
+                                        openModal()
+                                    }}>Edit</BlueButton>
+                                    <RedButton onClick={() => {
+                                        setCurrentPromo(promo)
+                                        console.log('delete');
+                                    }}>Delete</RedButton>
+                                </div>
+                            </Container>
                         ))}
                     </>}
                 </div>
@@ -73,7 +98,11 @@ export default function ManagePromos () {
                         <Button className="center w-50per"><SubTitle>ADD</SubTitle></Button>
                     </form>
                 </div>
-            </Container>
+            </Container>    
+            {currentPromo && <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <UpdatePromo promo={currentPromo}></UpdatePromo>
+            </Modal>}
+            
         </div>
     )
 }

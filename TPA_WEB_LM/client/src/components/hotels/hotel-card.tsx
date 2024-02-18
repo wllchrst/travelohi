@@ -11,13 +11,15 @@ import { FlexGapSmall } from "../wrapper/flex-gap-small"
 import { useUserAuth } from "../../contexts/user-context"
 import { Link } from "react-router-dom"
 import { PrimaryBackground, SecondaryColor } from "../wrapper/secondary"
+import ICartHotelTicketResponse from "../../interfaces/cart-hotel-response-interface"
+import { calculateRating } from "../../game/util"
 
-interface HotelCard {
+interface HotelCartCard {
     hotel : IHotelReponse
     inDetail : boolean
 }
 
-export default function HotelCard ({hotel, inDetail} : HotelCard) {
+export default function HotelCard ({hotel, inDetail} : HotelCartCard) {
 
     const role = useUserAuth().user.Role
     
@@ -63,7 +65,7 @@ export default function HotelCard ({hotel, inDetail} : HotelCard) {
                 <FlexGap>
                     <p>Ratings</p>
                     <FlexGapSmall>
-                        <p>5/5</p>
+                        <p>{hotel.Ratings.length > 0 ? calculateRating(hotel) + "/5" : "NO RATING"}</p>
                         <img className="rating-icon" src={ratingIcon} alt="" />
                     </FlexGapSmall>
                 </FlexGap>
@@ -71,7 +73,7 @@ export default function HotelCard ({hotel, inDetail} : HotelCard) {
                     {hotel.Description}
                 </div>
                 { inDetail ? <>
-                
+                    
                 </> : <>
                     <br />
                     <br />

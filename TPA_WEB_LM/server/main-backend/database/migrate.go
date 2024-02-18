@@ -9,6 +9,7 @@ func Migrate() {
 	db.AutoMigrate(&models.HotelPicture{})
 	db.AutoMigrate(&models.Hotel{})
 	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.CreditCard{})
 	db.AutoMigrate(&models.Facility{})
 	db.AutoMigrate(&models.Airline{})
 	db.AutoMigrate(&models.Flight{})
@@ -21,4 +22,8 @@ func Migrate() {
 	db.AutoMigrate(&models.HotelRoomTypeFacility{})
 	db.AutoMigrate(&models.CartFlightTicket{})
 	db.AutoMigrate(&models.CartHotelTicket{})
+	db.AutoMigrate(&models.FlightTicket{})
+	db.AutoMigrate(&models.HotelTicket{})
+	db.AutoMigrate(&models.Review{})
+	db.AutoMigrate(&models.Rating{})
 }

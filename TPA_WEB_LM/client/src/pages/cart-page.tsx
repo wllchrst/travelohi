@@ -6,10 +6,10 @@ import useFetchCart from "../hooks/use-fetch-cart"
 import FlightCart from "../components/cart/flight-cart"
 import HotelCart from "../components/cart/hotel-cart"
 import { SubTitle } from "../components/wrapper/subtitle"
+import PriceWrapper from "../components/wrapper/price-wrapper"
 
 export default function Cart () {
-    const { flightTotalPrice, flightCarts, isLoading, hotelCarts, hotelTotalPrice } = useFetchCart()
-    const [price, setPrice] = useState(flightTotalPrice)
+    const { flightCarts, isLoading, hotelCarts, total } = useFetchCart()
     const [flightCart, setFlightCart] = useState(true)
 
     if(isLoading) return <Loading></Loading>
@@ -21,18 +21,15 @@ export default function Cart () {
                     <div className="flex gap-3">
                         <Title onClick={() => {
                             setFlightCart(true) 
-                            setPrice(flightTotalPrice)
                         }} className="underline-effects">Flight Cart</Title>
                         <Title onClick={() => {
                             setFlightCart(false)
-                            setPrice(hotelTotalPrice)
                         }} className="underline-effects">Hotel Cart</Title>
                     </div>
-                    <SubTitle>Total : {flightCart ? flightTotalPrice : hotelTotalPrice}</SubTitle>
+                    <SubTitle className="flex gap-1">Total : <PriceWrapper price={total}/></SubTitle>
                 </div>
-            </Container>]
-            {flightCart ? <FlightCart totalPrice={flightTotalPrice} carts={flightCarts}></FlightCart> : <HotelCart carts={hotelCarts}></HotelCart>}
+            </Container>
+            {flightCart ? <FlightCart carts={flightCarts}></FlightCart> : <HotelCart carts={hotelCarts}></HotelCart>}
         </div>
-        
     )
 }

@@ -42,7 +42,6 @@ export default function ViewFlight () {
     
     return (
         <Container>
-            <FlightSearch></FlightSearch>
             <div className="flex gap-2">
                 <FirstContainer>
                     <div className="sub-container">

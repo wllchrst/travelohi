@@ -2,11 +2,13 @@ package flights
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nosurprisesplz/tpa-web-backend/database"
 	"github.com/nosurprisesplz/tpa-web-backend/models"
+	"github.com/nosurprisesplz/tpa-web-backend/utils"
 )
 
 // API For the flightseats
@@ -37,44 +39,51 @@ func CreateFlightSeat(context *gin.Context) {
 	db := database.GetDB()
 
 	context.Bind(&model)
+	err := utils.ValidateFlightSeat(model)
+
+	if err != nil {
+		log.Fatal(err)
+		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
 
 	result := db.Create(&model)
 
 	fmt.Println(model)
 
 	if result.Error != nil {
+		log.Fatal(result.Error)
 		context.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Failed creating data",
+			"success": false,
+			"message": result.Error.Error(),
 		})
 		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message": "success",
+		"success": true,
+		"message": "mantap",
 	})
 }
 
-func UpdateFlightSeat(context *gin.Context) {
+func UpdateFlightSeat(seatID string) error {
 	var model models.FlightSeat
 	db := database.GetDB()
-	id := context.Param("id")
-	result := db.Find(&model, "rating_id = ?", id)
+	result := db.Find(&model, "flight_seat_id = ?", seatID)
 
 	if result.Error != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Failed getting data",
-		})
-		return
+		return result.Error
 	}
 
+	model.IsAvalaible = !model.IsAvalaible
 	// GANTI
 
 	db.Save(&model)
 
-	context.JSON(http.StatusOK, gin.H{
-		"data": model,
-	})
-
+	return nil
 }
 
 func DeleteFlightSeat(context *gin.Context) {

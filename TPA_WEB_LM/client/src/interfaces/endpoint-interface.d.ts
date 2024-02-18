@@ -1,4 +1,6 @@
+import Paths from "../enums/api-paths";
+
 export interface IEndpoint {
-  url: string;
+  url: string | Paths;
   method: Method;
 }

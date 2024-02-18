@@ -11,6 +11,7 @@ export default interface IFlightResponse {
 	DepartureTime          :Date
 	ArrivalTime            :number
 	SeatTotal              :number
+	AirplaneCode : string
     Airline : IAirline
     AirportDestination : IAirport
     AirportOrigin : IAirport

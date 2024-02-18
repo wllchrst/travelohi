@@ -19,6 +19,11 @@ const service = new Service()
 
 export default function ViewHotel () {
     const { hotels, isLoading } = useFecthHotel()
+    const [update, setUpdate] = useState(false)
+
+    useEffect(() => {
+    }, [update])
+    
 
     const Container = styled.div`
         display: flex;

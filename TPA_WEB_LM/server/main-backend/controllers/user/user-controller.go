@@ -19,10 +19,16 @@ func LoginUser(context *gin.Context) {
 
 	context.Bind(&loginData)
 
+	err := utils.ValidateEmail(loginData.Email)
+
+	if err != nil {
+		context.JSON(200, utils.Response(err.Error(), false))
+		return
+	}
+
 	fmt.Println(loginData)
 
 	result := db.First(&user, "email = ?", loginData.Email)
-
 
 	if result.Error != nil {
 		fmt.Println(result.Error)
@@ -33,12 +39,13 @@ func LoginUser(context *gin.Context) {
 		return
 	}
 
+	if user.Banned {
+		context.JSON(404, utils.Response("account is banned", false))
+		return
+	}
 
-	if user.Banned == "true" {
-		context.JSON(404, gin.H {
-			"message" : "Account is Banned",
-		})
-
+	if user.IsLoggedIn {
+		context.JSON(404, utils.Response("you are logged in", false))
 		return
 	}
 
@@ -63,6 +70,10 @@ func LoginUser(context *gin.Context) {
 		return
 	}
 
+	user.IsLoggedIn = true
+
+	db.Save(&user)
+
 	context.JSON(http.StatusOK, gin.H{
 		"data": tokenString,
 	})
@@ -71,25 +82,37 @@ func LoginUser(context *gin.Context) {
 func CreateUser(context *gin.Context) {
 	var createUser models.User
 	db := database.GetDB()
+
 	context.Bind(&createUser)
+	createUser.Role = "customer"
+
+	err := utils.ValidateUser(createUser)
+
+	if err != nil {
+		context.AbortWithStatusJSON(http.StatusOK, utils.Response(err.Error(), false))
+		return
+	}
+
 	hashed, _ := bcrypt.GenerateFromPassword([]byte(createUser.Password), bcrypt.DefaultCost)
 
 	createUser.Password = string(hashed)
-	createUser.Role = "customer"
 
 	createUser.ID = uuid.NewString()
-	fmt.Println(createUser)
+
+	createUser.Banned = false
+	createUser.IsLoggedIn = false
+
 	result := db.Create(&createUser)
 
 	if result.Error != nil {
-		fmt.Println(result.Error)
-		context.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Interal Server Error",
-		})
+		context.JSON(http.StatusInternalServerError, utils.Response("Email has been used", false))
+		return
 	}
 
+	// utils.EmailUser(createUser.Email, "williamqwerty3@gmail.com", "bitch")
+
 	context.JSON(200, gin.H{
-		"data": createUser,
+		"success": true,
 	})
 }
 
@@ -105,26 +128,183 @@ func GetAllUser(context *gin.Context) {
 
 func BanHandleUser(context *gin.Context) {
 	var user models.User
-	var changed bool
 	userID := context.Param("id")
 	fmt.Println(userID)
 	db := database.GetDB()
 	db.Find(&user, "id = ?", userID)
 
-	if user.Banned == "false" {
-		user.Banned = "true"
-		fmt.Println("banning user : " + user.Banned)
-		db.Save(&user)
-		changed = true
-	}
+	user.Banned = !user.Banned
 
-	if user.Banned == "true" && !changed {
-		user.Banned = "false"
-		db.Save(&user)
-	}
+	db.Save(&user)
 
 	context.JSON(200, gin.H{
 		"data":    user,
 		"message": "success",
 	})
+}
+
+func GetUserDetailByID(context *gin.Context) {
+	var model models.User
+	db := database.GetDB()
+	id := context.Param("id")
+
+	// ! Ganti yang di dalam string rating_id tergantung dengan primary key yang ada di database
+	result := db.Find(&model, "email = ?", id)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed getting data",
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{
+		"data": model,
+	})
+}
+
+type UpdatePasswordInput struct {
+	Email                    string
+	PersonalSecurityAnswer   string
+	PersonalSecurityQuestion string
+	NewPassword              string
+	ConfirmNewPassword       string
+}
+
+func UpdatePassword(context *gin.Context) {
+	var updatePassword UpdatePasswordInput
+	var user models.User
+	db := database.GetDB()
+
+	context.Bind(&updatePassword)
+	result := db.Find(&user, "email = ?", updatePassword.Email)
+
+	fmt.Println(updatePassword)
+
+	if result.Error != nil {
+		context.AbortWithStatusJSON(http.StatusOK, gin.H{
+			"success": false,
+		})
+	}
+
+	if user.Banned {
+		context.JSON(200, utils.Response("You are banned", false))
+		return
+	}
+
+	if updatePassword.PersonalSecurityQuestion != user.PersonalSecurityQuestion {
+		context.JSON(http.StatusOK, utils.Response("Wrong Personal Security Question", false))
+		return
+	}
+
+	// update
+	if updatePassword.ConfirmNewPassword != updatePassword.NewPassword {
+		context.AbortWithStatusJSON(http.StatusOK, utils.Response("password doesnt match", false))
+		return
+	}
+	if user.Password == updatePassword.NewPassword {
+		context.AbortWithStatusJSON(http.StatusOK, utils.Response("password same with old password", false))
+		return
+	}
+
+	if user.PersonalSecurityAnswer != updatePassword.PersonalSecurityAnswer {
+		context.AbortWithStatusJSON(http.StatusOK, utils.Response("wrong personal security answer", false))
+		return
+	}
+
+	hashed, _ := bcrypt.GenerateFromPassword([]byte(updatePassword.NewPassword), bcrypt.DefaultCost)
+
+	user.Password = string(hashed)
+
+	db.Save(&user)
+
+	context.JSON(200, utils.Response("mantap", true))
+}
+
+func LogOut(context *gin.Context) {
+	var user models.User
+	id := context.Param("id")
+	db := database.GetDB()
+
+	result := db.Find(&user, "id = ?", id)
+
+	if result.Error != nil {
+		context.JSON(http.StatusBadRequest, false)
+		return
+	}
+
+	user.IsLoggedIn = false
+
+	result = db.Save(&user)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, false)
+		return
+	}
+
+	context.JSON(200, utils.Response("mantap", true))
+}
+
+func UpdateUserInformation(context *gin.Context) {
+	var userInput models.User
+	var user models.User
+	db := database.GetDB()
+
+	context.Bind(&userInput)
+
+	fmt.Println(userInput.Email)
+	err := utils.ValidateUser(userInput)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, utils.Response(err.Error(), false))
+		return
+	}
+
+	result := db.Find(&user, "id = ?", userInput.ID)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
+	}
+
+	user.Email = userInput.Email
+	user.FirstName = userInput.FirstName
+	user.LastName = userInput.LastName
+	user.ProfilePictureLink = userInput.ProfilePictureLink
+
+	db.Save(&user)
+
+	context.JSON(http.StatusOK, utils.Response("mantap", true))
+}
+
+func UserSubcribe(context *gin.Context) {
+	var user models.User
+	db := database.GetDB()
+
+	id := context.Param("id")
+	result := db.Find(&user, "id = ?", id)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
+		return
+	}
+
+	user.IsSubscribed = !user.IsSubscribed
+
+	db.Save(&user)
+
+	context.JSON(http.StatusOK, utils.Response("ok", true))
+}
+
+func AddUserWallet(context *gin.Context) {
+	var user models.User
+	db := database.GetDB()
+	id := context.Param("id")
+
+	db.Find(&user, "id = ?", id)
+
+	user.Wallet += 10
+
+	db.Save(&user)
+
+	context.JSON(http.StatusOK, utils.Response("ok", true))
 }

@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/williamchristian/Documents/LM23-2/TPA/WEB-LM-232/TPA_WEB_LM/server",
+      "program": "/Users/williamchristian/Documents/LM23-2/TPA/WEB-LM-232/TPA_WEB_LM/server/build/Debug/outDebug"
+    }
+  ]
+}

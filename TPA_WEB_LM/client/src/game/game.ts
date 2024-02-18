@@ -11,6 +11,11 @@ import winImage from "../assets/GameAsset/win.png"
 import loseImage from "../assets/GameAsset/lose.png"
 import drawImage from "../assets/GameAsset/draw.png"
 import { createImage } from "./util";
+import { IUser } from "../interfaces/user-interface";
+import { UserProvider, useUserAuth } from "../contexts/user-context";
+import Service from "../utils/service";
+import Paths from "../enums/api-paths";
+import { Method } from "../enums/method-enum";
 
 
 export class Game { 
@@ -40,8 +45,9 @@ export class Game {
 
     private static instance : Game | null
     background : Background | null = null
-
-    constructor (canvas : HTMLCanvasElement){
+    user : IUser
+    constructor (canvas : HTMLCanvasElement, user : IUser){
+        this.user = user
         this.canvas = canvas
         this.context = canvas.getContext('2d')
         this.targetFPS = Settings.FPS
@@ -54,9 +60,9 @@ export class Game {
         this.startTime = this.then 
     }
 
-    static getInstance (canvas : HTMLCanvasElement | null) {
+    static getInstance (canvas : HTMLCanvasElement | null, user : IUser) {
         if(!Game.instance && canvas) {
-            Game.instance = new Game(canvas)
+            Game.instance = new Game(canvas, user)
         }
         return Game.instance
     }
@@ -68,16 +74,32 @@ export class Game {
     losePage(){
         const image = createImage(loseImage)
         this.context?.drawImage(image, 275, 200, 500, 250)
+        window.location.href = "/"
+    }
+
+    async addWallet(){
+        alert("adding Money" + this.user.Email)
+        const service = new Service();
+        const response = await service.request({
+            url: Paths.ADD_BALANCE,
+            method: Method.POST
+        }, this.user.ID)
+
+        console.log(response);
+        return response.success
     }
 
     winPage(){
         const image = createImage(winImage)
         this.context?.drawImage(image, 275, 200, 500, 250)
+        this.addWallet()
+        window.location.href = "/"
     }
 
     tiePage() {
         const image = createImage(drawImage)
         this.context?.drawImage(image, 275, 200, 500, 250)
+        window.location.href = "/"
     }
 
     checkSomeoneDied() {
@@ -87,12 +109,12 @@ export class Game {
         const playerID = Server.getInstance().playerID
         if(this.player.health <= 0) {
             this.stopGame()
-            if(playerID == 0 || playerID == 100) this.losePage()
+            if(playerID == 1 || playerID == 100) this.losePage()
             else this.winPage()
         }
         else if(this.secondPlayer.health <= 0) {
             this.stopGame()
-            if(playerID == 1 || playerID == 100) this.losePage()
+            if(playerID == 2 || playerID == 100) this.losePage()
             else this.winPage()
         }
         else if(this.timer?.currentTime >= 60) {
@@ -119,8 +141,6 @@ export class Game {
             this.player?.render()
             this.secondPlayer?.render()
             this.checkSomeoneDied()
-            console.log('WHY IS IT STILL RUNNING');
-            console.log(Server.getInstance().playerID);
         }
     }
 

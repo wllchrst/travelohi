@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nosurprisesplz/tpa-web-backend/database"
 	"github.com/nosurprisesplz/tpa-web-backend/models"
+	"github.com/nosurprisesplz/tpa-web-backend/utils"
 )
 
 // API For the ratings
@@ -37,18 +38,21 @@ func CreateRating(context *gin.Context) {
 
 	context.Bind(&model)
 
-	result := db.Create(&model)
+	err := utils.ValidateRating(model)
 
-	if result.Error != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Failed creating data",
-		})
+	if err != nil {
+		context.JSON(http.StatusBadRequest, utils.Response(err.Error(), false))
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"message": "success",
-	})
+	result := db.Create(&model)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
+		return
+	}
+
+	context.JSON(http.StatusOK, utils.Response("mantap", true))
 }
 
 func UpdateRating(context *gin.Context) {

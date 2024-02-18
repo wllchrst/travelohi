@@ -25,6 +25,8 @@ import { GreenButton } from "../wrapper/green-button"
 import Modal from "./modal"
 import AddHotelToCart from "./add-to-cart"
 import PriceWrapper from "../wrapper/price-wrapper"
+import { BlueButton } from "../wrapper/blue-button"
+import HotelBuyNow from "./buy-now-hotel"
 
 interface IAddRoomTypeCom {
     hotel : IHotelReponse
@@ -38,6 +40,7 @@ export default function AddRoomType ({hotel} : IAddRoomTypeCom) {
     const [facilities, setFacilities] = useState<string[]>([])
     const { changeHappen } = useChangeContext()
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [secondModal, setSecondModal] = useState(false);
     const [currentRoom, setcurrentRoom] = useState<IHotelRoomType>({} as IHotelRoomType)
 
     const openModal = () => {
@@ -45,6 +48,7 @@ export default function AddRoomType ({hotel} : IAddRoomTypeCom) {
     };
 
     const closeModal = () => {
+        setSecondModal(false);
         setIsModalOpen(false);
     };
 
@@ -103,10 +107,18 @@ export default function AddRoomType ({hotel} : IAddRoomTypeCom) {
                                         ))}
                                     </div>
                                     {Role == 'customer' ? <>
-                                        <GreenButton  onClick={() => {
-                                            setcurrentRoom(r)
-                                            openModal()
-                                        }}>Add To Cart</GreenButton>
+                                        <FlexGap className="justify-between">
+                                            <GreenButton  onClick={() => {
+                                                setcurrentRoom(r)
+                                                openModal()
+                                            }}>Add To Cart</GreenButton>
+                                            <BlueButton onClick={() => {
+                                                console.log('test');
+                                                setcurrentRoom(r)
+                                                setSecondModal(true)
+                                            }}>Buy Now</BlueButton>
+                                        </FlexGap>
+                                        
                                     </> : <DangerButton onClick={() => {
                                             deleteRoomType(r).then((result) => {
                                                 if(result) window.location.reload()
@@ -118,6 +130,10 @@ export default function AddRoomType ({hotel} : IAddRoomTypeCom) {
                         ))}
                     </ul>
                 </div>
+
+                <Modal isOpen={secondModal} onClose={closeModal}>
+                    <HotelBuyNow hotel={hotel} roomType={currentRoom}/>
+                </Modal>
 
                 <Modal isOpen={isModalOpen} onClose={closeModal}>
                     <AddHotelToCart roomType={currentRoom} hotel={hotel}></AddHotelToCart>

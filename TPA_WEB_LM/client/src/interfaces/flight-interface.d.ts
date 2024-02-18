@@ -6,5 +6,5 @@ export default interface IFlight {
 	DepartureTime          :Date
 	ArrivalTime            :number
 	SeatTotal              :number
-	Price 				   :number
+	AirplaneCode           :string
 }

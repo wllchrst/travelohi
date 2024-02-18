@@ -9,7 +9,9 @@ export interface IUser {
     PersonalSecurityQuestion : string
     PersonalSecurityAnswer   : string
     Role : string
-    Banned : string
+    Banned : boolean 
+    IsLoggedIn               :boolean
+	IsSubscribed             :boolean
 }
 
 export interface ILoginData {

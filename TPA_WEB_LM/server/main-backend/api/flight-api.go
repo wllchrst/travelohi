@@ -16,7 +16,6 @@ func CreateFlightAPI() {
 
 	engine.GET(enums.VIEW_ALL_FLIGHTSEAT, flights.ViewFlightSeat)
 	engine.GET(enums.VIEW_FLIGHTSEAT_BY_ID, flights.ViewFlightSeatByID)
-	engine.PATCH(enums.UPDATE_FLIGHTSEAT, flights.UpdateFlightSeat)
 	engine.DELETE(enums.DELETE_FLIGHTSEAT, flights.DeleteFlightSeat)
 	engine.POST(enums.CREATE_FLIGHTSEAT, flights.CreateFlightSeat)
 
@@ -25,4 +24,14 @@ func CreateFlightAPI() {
 	engine.PATCH(enums.UPDATE_CARTFLIGHTTICKET, flights.UpdateCartFlightTicket)
 	engine.DELETE(enums.DELETE_CARTFLIGHTTICKET, flights.DeleteCartFlightTicket)
 	engine.POST(enums.CREATE_CARTFLIGHTTICKET, flights.CreateCartFlightTicket)
+
+	engine.GET(enums.VIEW_ALL_FLIGHTTICKET, flights.ViewFlightTicket)
+	engine.POST(enums.SEARCH_FLIGHTTCKET, flights.SearchFlightTicket)
+	engine.PATCH(enums.UPDATE_FLIGHTTICKET, flights.UpdateFlightTicket)
+	engine.DELETE(enums.DELETE_FLIGHTTICKET, flights.DeleteFlightTicket)
+	engine.POST(enums.CREATE_FLIGHTTICKET, flights.CreateFlightTicket)
+	engine.POST(enums.BUY_FLIGHT, flights.BuyFlight)
+	engine.GET(enums.FLIGHT_RECOMMENDATION, flights.GetFlightRecommendation)
+
+	engine.GET(enums.HISTORY_FLIGHT_TICKET, flights.HistoryViewFlightTicket)
 }

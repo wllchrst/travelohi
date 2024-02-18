@@ -18,22 +18,25 @@ import { PrimaryBackground, SecondaryColor } from "../components/wrapper/seconda
 import { Title } from "../components/wrapper/title"
 import { BorderedContainer } from "../components/wrapper/bordered-container"
 import useFetchUser from "../hooks/use-fetch-user"
-
+import ReCAPTCHA from 'react-google-recaptcha';
 export default function Login() {
     const [user, setUser] = useState({ } as ILoginData)
     const [file, setFile] = useState<File>()
     const navigate = useNavigate()
     const userContext = useUserAuth()
+    const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null);
+
+    const handleRecaptchaChange = (value : string | null) => {
+        // Store the reCAPTCHA value in the component state
+        setRecaptchaValue(value);
+    };
+
     useEffect(() => {
-        console.log(userContext.isAuth());
         if(userContext.isAuth()) {
-            useFetchUser()
-            console.log('here');
             navigate('/home')
         }
     }, [userContext.user])
     
-
     const loginUser = async () => {
         const service = new Service()
         const endpoint : IEndpoint = {
@@ -41,7 +44,7 @@ export default function Login() {
             method: Method.POST
         }
         const response = await service.request<string>(endpoint, "", user)
-        return response.data
+        return response
     }
 
     const changeHandle = (event : ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -54,13 +57,14 @@ export default function Login() {
 
     const submitHandle = (event : FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+
         loginUser().then((result) => {
-            if(result) {
-                Cookies.set("token", result)
+            if(result.data) {
+                Cookies.set("token", result.data)
                 navigate("/")
                 window.location.reload()
             }
-            else alert("Invalid Credential")
+            else alert(result.message)
         })
     }
 
@@ -73,10 +77,16 @@ export default function Login() {
                     <form onSubmit={submitHandle}>
                         <Input placeholder="example@domain.com" type="text" name="Email" onChange={changeHandle}></Input>
                         <Input placeholder="Password" type="password" name="Password" onChange={changeHandle}></Input>
+                        <ReCAPTCHA
+                            className="w-full"
+                            sitekey="6LdhFmYpAAAAACqwRNApdRx3Fe3ihp0QxxFdia8L"
+                            onChange={handleRecaptchaChange}
+                            />
                         <Button type="submit" className="center">Login</Button>
                     </form>
-                    <div className="center">
+                    <div className="center flex-col">
                         <Link to={"/register"} className="link underline-effects">Register New Account</Link>
+                        <Link to={"/forgot"} className="link underline-effects red">Forgot Password Account?</Link>
                     </div>
                 </PrimaryBackground>
             </div>

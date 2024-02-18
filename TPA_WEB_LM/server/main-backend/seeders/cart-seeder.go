@@ -1,0 +1,6 @@
+
+package seeders
+
+func CreateCartTickets (){
+	
+}

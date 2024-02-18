@@ -7,14 +7,14 @@ import { Method } from "../enums/method-enum";
 import ICartHotelTicket from "../interfaces/cart-hotel-interface";
 import ICartHotelTicketResponse from "../interfaces/cart-hotel-response-interface";
 import HotelDetail from "../admin-page/hotel-detail-page";
+import { getDaysDifference } from "../game/util";
 
 export default function useFetchCart () {
     const { user } = useUserAuth()
     const [isLoading, setisLoading] = useState(true)
     const [flightCarts, setCartFlights] = useState<ICartFlightTicketResponse[]>([])
     const [hotelCarts, setHotelCarts] = useState<ICartHotelTicketResponse[]>([])
-    const [flightTotalPrice, setflightTotalPrice] = useState(0)
-    const [hotelTotalPrice, sethotelTotalPrice] = useState(0)
+    const [total, setTotal] = useState(0)
     const service = new Service()
 
     async function fetchCart() {
@@ -22,7 +22,10 @@ export default function useFetchCart () {
             url: Paths.VIEW_CARTFLIGHTTICKET_BY_ID,
             method: Method.GET
         }, user.ID).then((result) => {
-            if(result.data) setCartFlights(result.data)
+            if(result.data) {
+                console.log(result);
+                setCartFlights(result.data)
+            }
         })
 
         await service.request<ICartHotelTicketResponse[]>({
@@ -41,18 +44,13 @@ export default function useFetchCart () {
         for(const flight of flightCarts) {
             counter += flight.Flight.FlightSeats[0].Price
         }
-        setflightTotalPrice(counter)
-
-        counter = 0
         for(const hotel of hotelCarts) {
-            counter += hotel.RoomType.Price
+            console.log(`hotel room type price ${hotel.RoomType.Price}`);
+            counter += (hotel.RoomType.Price * getDaysDifference(hotel.CheckInDate, hotel.CheckOutDate))
         }
 
-        console.log(counter);
-
-        sethotelTotalPrice(counter)
+        setTotal(counter)
     }
-
 
     useEffect(() => {
         fetchCart()
@@ -61,8 +59,8 @@ export default function useFetchCart () {
 
     useEffect(() => {
         countTotal()
-    }, [flightCarts])
+    }, [flightCarts, hotelCarts])
     
 
-    return {isLoading, flightCarts, flightTotalPrice, hotelCarts, hotelTotalPrice }
+    return {isLoading, flightCarts, hotelCarts, total }
 }

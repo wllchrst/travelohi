@@ -88,7 +88,16 @@ export default function HotelDetailCard( { hotel } : IHotelDetailCard) {
                     </div>
                 </div>
             </div>
-
+            <div className="p-1 flex flex-col gap-1">
+                <Title>Hotel Facilities</Title>
+                <div className="facility-grid">
+                    {hotel.HotelFacilities.map((rf, index) => (
+                        <div key={index} className="facility-grid-item">
+                            {rf.FacilityDescription}
+                        </div>
+                    ))}
+                </div>
+            </div>
         </Container>
     )
 }

@@ -16,13 +16,6 @@ func CreateHotelAPI() {
 	engine.POST(enums.CREATE_HOTEL_ROOM_TYPE, hotel.CreateHotelRoomType)
 	engine.DELETE(enums.DELETE_ROOM_TYPE, hotel.DeleteRoomType)
 
-	// ! Rating
-	engine.GET(enums.VIEW_ALL_RATING, hotel.ViewRating)
-	engine.GET(enums.VIEW_RATING_BY_ID, hotel.ViewRatingByID)
-	engine.PATCH(enums.UPDATE_RATING, hotel.UpdateRating)
-	engine.DELETE(enums.DELETE_RATING, hotel.DeleteRating)
-	engine.POST(enums.CREATE_RATING, hotel.CreateRating)
-
 	engine.GET(enums.VIEW_ALL_HOTELROOMTYPEFACILITY, hotel.ViewHotelRoomTypeFacility)
 	engine.GET(enums.VIEW_HOTELROOMTYPEFACILITY_BY_ID, hotel.ViewHotelRoomTypeFacilityByID)
 	engine.PATCH(enums.UPDATE_HOTELROOMTYPEFACILITY, hotel.UpdateHotelRoomTypeFacility)
@@ -34,4 +27,20 @@ func CreateHotelAPI() {
 	engine.PATCH(enums.UPDATE_CARTHOTELTICKET, hotel.UpdateCartHotelTicket)
 	engine.DELETE(enums.DELETE_CARTHOTELTICKET, hotel.DeleteCartHotelTicket)
 	engine.POST(enums.CREATE_CARTHOTELTICKET, hotel.CreateCartHotelTicket)
+
+	engine.GET(enums.VIEW_ALL_HOTELTICKET, hotel.ViewHotelTicket)
+	engine.POST(enums.SEARCH_HOTELTICKET, hotel.SearchHotelTicket)
+	engine.PATCH(enums.UPDATE_HOTELTICKET, hotel.UpdateHotelTicket)
+	engine.DELETE(enums.DELETE_HOTELTICKET, hotel.DeleteHotelTicket)
+	engine.POST(enums.CREATE_HOTELTICKET, hotel.CreateHotelTicket)
+	engine.POST(enums.BUY_HOTEL, hotel.BuyHotel)
+	engine.GET(enums.HOTEL_RECOMMENDATION, hotel.GetHotelRecommendation)
+
+	engine.GET(enums.HISTORY_HOTEL_TICKET, hotel.HistoryViewHotelTicket)
+
+	engine.GET(enums.VIEW_ALL_REVIEW, hotel.ViewReview)
+	engine.GET(enums.VIEW_REVIEW_BY_ID, hotel.ViewReviewByID)
+	engine.PATCH(enums.UPDATE_REVIEW, hotel.UpdateReview)
+	engine.DELETE(enums.DELETE_REVIEW, hotel.DeleteReview)
+	engine.POST(enums.CREATE_REVIEW, hotel.CreateReview)
 }

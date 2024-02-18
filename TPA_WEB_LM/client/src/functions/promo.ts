@@ -12,10 +12,17 @@ export async function createPromo(promo : IPromo, pictureFile : File){
         promo.ID = v4()
         const pictureLink = await FirebaseUtil.PostImage(pictureFile)
         promo.PictureLink = pictureLink
-        await service.request({
+
+        const response = await service.request({
             url: Paths.CREATE_PROMO,
             method: Method.POST
-        }, '', promo)   
+        }, '', promo)
+
+        if(!response.success) {
+            alert(response.message)
+            return false
+        }
+
         return true
     } catch (error) {
         console.log(error);  
@@ -25,12 +32,32 @@ export async function createPromo(promo : IPromo, pictureFile : File){
 }
 
 export async function deletePromo(promo : IPromo){
-    console.log(promo.ID);
-    // const result = await service.request({
-    //     url: Paths.DELETE_PROMO,
-    //     method: Method.DELETE
-    // }, promo.ID)
+    const result = await service.request({
+        url: Paths.DELETE_PROMO,
+        method: Method.DELETE
+    }, promo.ID)
 
-    // if(result.message == 'success') return true
-    // return false
+    if(!result.success) {
+        alert(result.message)
+        return false
+    }
 }
+
+
+export async function updatePromo(promo : IPromo){
+    console.log(promo);
+    const response = await service.request({
+        url: Paths.UPDATE_PROMO,
+        method: Method.POST,
+    }, '', promo)
+
+    console.log(response);
+
+    if(!response.success) {
+        alert(response.message)
+        return false
+    }
+
+    return true
+}
+

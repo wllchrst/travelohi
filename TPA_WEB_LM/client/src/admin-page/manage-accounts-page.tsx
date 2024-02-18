@@ -10,17 +10,18 @@ import { Method } from "../enums/method-enum";
 
 
 export default function ManageAccounts () {
-    const { users, isLoading } = useGetAllUser()
+
+    const { users, isLoading, setChange, change } = useGetAllUser()
     const service = new Service()
 
     const clickHandle = (user : IUser) => {
-        const result = confirm(`Are you sure, you want to ${(user.Banned == 'false') ? 'BAN' : 'UNBANNED'} ${user.Email}`)
+        const result = confirm(`Are you sure, you want to ${(user.Banned == false) ? 'BAN' : 'UNBANNED'} ${user.Email}`)
         if(result) {
             service.request({
                 url: Paths.BAN_HANDLE_USER,
                 method: Method.PATCH
             }, user.ID).then((result) => {
-                if(result.message === 'success') window.location.reload()
+                if(result.message === 'success') setChange(change + 1)
             })
         }
     }
@@ -43,7 +44,7 @@ export default function ManageAccounts () {
                                 <td>{user.Email}</td>
                                 <td>{user.Role}</td>
                                 <td className="center " onClick={() => clickHandle(user)}>
-                                    {user.Banned == 'false' ? <h2 className="red hover-effects">BAN</h2> : <h2 className="green hover-effects">UNBANNED</h2>}
+                                    {user.Banned == false ? <h2 className="red hover-effects">BAN</h2> : <h2 className="green hover-effects">UNBANNED</h2>}
                                 </td>
                             </tr>
                         ))}

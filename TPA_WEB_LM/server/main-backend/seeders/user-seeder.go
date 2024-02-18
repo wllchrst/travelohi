@@ -30,7 +30,7 @@ func UserSeeder() {
 		user.PersonalSecurityQuestion = "test"
 		user.Role = "customer"
 		user.ID = uuid.NewString()
-		user.Banned = "false"
+		user.Banned = false
 		// db.Create(&user)
 	}
 }

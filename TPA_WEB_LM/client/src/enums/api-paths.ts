@@ -47,7 +47,51 @@ GET_LOCATIONS = host + '/get_locations',
     VIEW_CARTHOTELTICKET_BY_ID = host + "/view_carthotelticket",
     UPDATE_CARTHOTELTICKET = host + "/update_carthotelticket",
     DELETE_CARTHOTELTICKET = host + "/delete_carthotelticket",
-    CREATE_CARTHOTELTICKET = host + "/create_carthotelticket"
+    CREATE_CARTHOTELTICKET = host + "/create_carthotelticket",
+
+    GET_USER_DETAIL = host+ "/user",
+    UPDATE_PASSWORD = host + "/user/update",
+
+    VIEW_ALL_FLIGHTTICKET = host + "/view_flightticket",
+    SEARCH_FLIGHTTCKET    = host + "/search_flightticket",
+    VIEW_FLIGHTTICKET_BY_ID = host + "/view_flightticket",
+    UPDATE_FLIGHTTICKET = host + "/update_flightticket",
+    DELETE_FLIGHTTICKET = host + "/delete_flightticket",
+    CREATE_FLIGHTTICKET = host + "/create_flightticket",
+    BUY_FLIGHT              = host + "/buy_flight",
+
+    VIEW_ALL_HOTELTICKET = host + "/view_hotelticket",
+	SEARCH_HOTELTICKET   = host + "/search_hotelticket",
+    UPDATE_HOTELTICKET = host + "/update_hotelticket",
+    DELETE_HOTELTICKET = host + "/delete_hotelticket",
+    CREATE_HOTELTICKET = host + "/create_hotelticket",
+    BUY_HOTEL              = host + "/buy_hotel",
+    LOGOUT = host + "/log_out",
+
+    UPDATE_PROMO = host + "/update_promo",
+    HOTEL_RECOMMENDATION = host + "/hotel_recommendation",
+    FLIGHT_RECOMMENDATION = host + "/flight_recommendation",
+    HISTORY_HOTEL_TICKET  = host + "/history_hotel_ticket",
+	HISTORY_FLIGHT_TICKET = host + "/history_flight_ticket",
+    VIEW_ALL_RATING = host + "/view_rating",
+    VIEW_RATING_BY_ID = host + "/view_rating",
+    UPDATE_RATING = host + "/update_rating",
+    DELETE_RATING = host + "/delete_rating",
+    CREATE_RATING = host + "/create_rating",
+
+    VIEW_ALL_REVIEW = host + "/view_review",
+    VIEW_REVIEW_BY_ID = host + "/view_review",
+    UPDATE_REVIEW = host + "/update_review",
+    DELETE_REVIEW = host + "/delete_review",
+    CREATE_REVIEW = host + "/create_review",
+    UPDATE_USER_INFORMATION = host + "/update_user_information",
+    USER_SUBSCRIBE = host + "/user_subscribe",
+    VIEW_ALL_CREDITCARD = host + "/view_creditcard",
+    VIEW_CREDITCARD_BY_ID = host + "/view_creditcard",
+    UPDATE_CREDITCARD = host + "/update_creditcard",
+    DELETE_CREDITCARD = host + "/delete_creditcard",
+    CREATE_CREDITCARD = host + "/create_creditcard",
+    ADD_BALANCE = host + "/add_balance"
 }
 
 

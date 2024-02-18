@@ -78,8 +78,10 @@ class Service {
       const url = this.generateUrl(endpoint, id, param);
       const response = await this.getResponse(endpoint.method, data, url);
       result = response.data;
+      console.log(result);
     } catch (error) {
       const { response } = error as any;
+      console.log();
 
       result = response
         ? { data: null, success: false, message: response.data.message }

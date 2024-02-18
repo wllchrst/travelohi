@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nosurprisesplz/tpa-web-backend/database"
 	"github.com/nosurprisesplz/tpa-web-backend/models"
+	"github.com/nosurprisesplz/tpa-web-backend/utils"
 )
 
 // API For the carthoteltickets
@@ -37,41 +38,59 @@ func CreateCartHotelTicket(context *gin.Context) {
 
 	context.Bind(&model)
 
+	err := utils.ValidateCartHotelTicket(model)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, utils.Response(err.Error(), false))
+		return
+	}
+
 	result := db.Create(&model)
 
 	if result.Error != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Failed creating data",
-		})
+		context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"message": "success",
-	})
+	context.JSON(http.StatusOK, utils.Response("mantap", true))
 }
 
 func UpdateCartHotelTicket(context *gin.Context) {
-	var model models.CartHotelTicket
-	db := database.GetDB()
-	id := context.Param("id")
-	result := db.Find(&model, "rating_id = ?", id)
+	var model models.UpdateHotelCart
+	context.Bind(&model)
 
-	if result.Error != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Failed getting data",
-		})
+	validate := utils.ValidateUpdateHotelCart(model)
+
+	if validate != nil {
+		context.JSON(http.StatusBadRequest, utils.Response(validate.Error(), false))
 		return
 	}
 
-	// GANTI
+	db := database.GetDB()
 
-	db.Save(&model)
+	id := context.Param("id")
 
-	context.JSON(http.StatusOK, gin.H{
-		"data": model,
-	})
+	var cart models.CartHotelTicket
 
+	result := db.Find(&cart, "cart_id = ?", id)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
+		return
+	}
+
+	cart.CheckInDate = model.CheckInDate
+
+	cart.CheckOutDate = model.CheckOutDate
+
+	result = db.Save(&cart)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
+		return
+	}
+
+	context.JSON(200, utils.Response("", true))
 }
 
 func DeleteCartHotelTicket(context *gin.Context) {

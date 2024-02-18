@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react"
+import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import Input from "../components/wrapper/input"
 import Option from "../components/wrapper/option"
 import Select from "../components/wrapper/select"
@@ -11,12 +11,21 @@ import Paths from "../enums/api-paths"
 import { Method } from "../enums/method-enum"
 import Service from "../utils/service"
 import { FirebaseUtil } from "../utils/firebase"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { PrimaryBackground, SecondaryColor } from "../components/wrapper/secondary"
+import { FlexGap } from "../components/wrapper/FlexGap"
+import { useUserAuth } from "../contexts/user-context"
 
 export default function Register () {
-    const [user, setUser] = useState({ } as IUser)
+    const [user, setUser] = useState({ IsSubscribed: false } as IUser)
     const [file, setFile] = useState<File>()
+    const navigate = useNavigate()
+    const userContext = useUserAuth()
+    useEffect(() => {
+        if(userContext.isAuth()) {
+            navigate('/home')
+        }
+    }, [userContext.user])
 
     const registerUser = async () => {
         const service = new Service()
@@ -33,7 +42,6 @@ export default function Register () {
             ...user,
             [event.target.name]: event.target.value
         })
-        console.log(user);
     }
 
     const submitHandle = (event : FormEvent<HTMLFormElement>) => {
@@ -46,11 +54,15 @@ export default function Register () {
         FirebaseUtil.PostImage(file).then((url) => {
             user.ProfilePictureLink = url
             registerUser().then((result) => {
-                console.log(result);
+                if(result.success) {
+                    alert("Register Success")
+                    navigate('/login')
+                }
+                else {
+                    alert(result.message)
+                }
             })
         })
-
-        
     }
     return (
         <PrimaryBackground>
@@ -93,12 +105,21 @@ export default function Register () {
                                 }
                             }}></Input>
                         </div>
-                        <Select name="PersonalSecurityQuestion" id="" onChange={changeHandle}>
+                        <Select name="PersonalSecurityQuestion" id="" onChange={changeHandle} value={personalQuestion[0]}>
                             {personalQuestion.map((question, index) => (
                                 <Option value={question} key={index}>{question}</Option>
                             ))}
                         </Select>
                         <Input placeholder="Answer" name="PersonalSecurityAnswer" onChange={changeHandle}></Input>
+                        <FlexGap>
+                            <input type="checkbox" onChange={() => {
+                                setUser({
+                                    ...user, 
+                                    IsSubscribed: !user.IsSubscribed
+                                })
+                            }}/>
+                            <p>Subscribe to News Letter</p>
+                        </FlexGap>
                         <Button type="submit">Register</Button>
                     </form>
                     <div className="center">

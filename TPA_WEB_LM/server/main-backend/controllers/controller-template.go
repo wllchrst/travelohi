@@ -29,7 +29,7 @@ import (
 // VIEW_OBJECT_BY_ID = host + "/view_object",
 // UPDATE_OBJECT = host + "/update_object",
 // DELETE_OBJECT = host + "/delete_object",
-// CREATE_OBJECT = host + "/create_object"
+// CREATE_OBJECT = host + "/create_object",
 
 func CreateObject(context *gin.Context) {
 	var model models.Object

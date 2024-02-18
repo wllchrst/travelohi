@@ -9,7 +9,7 @@ type Flight struct {
 	AirportCodeOrigin      string
 	DepartureTime          time.Time
 	ArrivalTime            int
-	Price                  int
+	AirplaneCode           string
 	Airline                Airline `gorm:"foreignKey:AirlineRefer"`
 	AirportDestination     Airport `gorm:"foreignKey:AirportCodeDestination"`
 	AirportOrigin          Airport `gorm:"foreignKey:AirportCodeOrigin"`

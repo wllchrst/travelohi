@@ -9,7 +9,7 @@ import (
 type User struct {
 	gorm.Model
 	ID                       string `gorm:"primaryKey" faker:"uuid_hyphenated"`
-	Email                    string `faker:"email"`
+	Email                    string `faker:"email" gorm:"unique"`
 	Password                 string `faker:"password"`
 	FirstName                string `faker:"first_name"`
 	LastName                 string `faker:"last_name"`
@@ -19,7 +19,11 @@ type User struct {
 	PersonalSecurityQuestion string
 	PersonalSecurityAnswer   string
 	Role                     string
-	Banned                   string
+	Banned                   bool
+	IsLoggedIn               bool
+	IsSubscribed             bool
+	Wallet                   float32
+	CreditCard               CreditCard `gorm:"foreignKey:UserRefer"`
 }
 
 type LoginUser struct {

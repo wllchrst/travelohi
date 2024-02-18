@@ -10,26 +10,39 @@ import { SeatType } from "../enums/seat-type-enum";
 import { IUser } from "../interfaces/user-interface";
 import IFlightResponse from "../interfaces/flight-response-interface";
 import ICartFlightTicket from "../interfaces/cart-flight-interface";
+import IFlightTicket from "../interfaces/flight-ticket-interface";
 
 const service = new Service()
 
 export async function createFlight(flight : IFlight, transits : ITransit[], business : Seat, economy : Seat, firstClass: Seat){
     try {
         flight.FlightID = v4()
-        await service.request({
+        const response = await service.request({
             url: Paths.CREATE_FLIGHT,
             method: Method.POST
         }, '', flight)
-        
+
+        if(!response.success) {
+            alert(response.message)
+            return false
+        }    
+
         for(const t of transits) {
             t.FlightID = flight.FlightID
             t.TransitID = v4()
-            console.log(t);
-            await service.request({
+            const response = await service.request({
                 url: Paths.CREATE_FLIGHT_TRANSIT,
                 method: Method.POST
             }, '', t)
+
+            console.log(response);
+            if(!response.success) {
+                alert(response.message)
+                return false
+            }
         }
+
+        console.log("before ec");
     
         let seatNumber = 1
         for(let i = 0; i < business.Total; i++){ 
@@ -42,11 +55,15 @@ export async function createFlight(flight : IFlight, transits : ITransit[], busi
                 SeatClass: SeatType.Business,
                 Price: business.Price,
             }
-            console.log(seat);
-            await service.request({
+            const response = await service.request({
                 url: Paths.CREATE_FLIGHTSEAT,
                 method: Method.POST
             }, '', seat)
+
+            if(!response.success) {
+                alert(response.message)
+                return false
+            }
             seatNumber++
         }
     
@@ -59,10 +76,19 @@ export async function createFlight(flight : IFlight, transits : ITransit[], busi
                 SeatClass: SeatType.Economy,
                 Price: business.Price,
             }
-            await service.request({
+            const response = await service.request({
                 url: Paths.CREATE_FLIGHTSEAT,
                 method: Method.POST
             }, '', seat)
+
+            console.log("making economy seat");
+            console.log(response);
+
+            if(!response.success) {
+                alert(response.message)
+                return false
+            }
+
             seatNumber++
         }
     
@@ -79,6 +105,12 @@ export async function createFlight(flight : IFlight, transits : ITransit[], busi
                 url: Paths.CREATE_FLIGHTSEAT,
                 method: Method.POST
             }, '', seat)
+
+            if(!response.success) {
+                alert(response.message)
+                return false
+            }
+            
             seatNumber++
         }
     
@@ -89,18 +121,84 @@ export async function createFlight(flight : IFlight, transits : ITransit[], busi
     }
 }
 
-export async function addFlightToCart (user : IUser, flight : IFlightResponse) {
+export async function addFlightToCart (user : IUser, flight : IFlightResponse, flightSeatID : string, extraLuggage : number) {
     const cart : ICartFlightTicket = {
+        ExtraLuggage: extraLuggage,
         CartID: v4(),
         UserRefer: user.ID,
+        FlightSeatRefer: flightSeatID,
         FlightRefer: flight.FlightID
     }
 
-    const result = await service.request({
+    const response = await service.request({
         url: Paths.CREATE_CARTFLIGHTTICKET,
         method: Method.POST
     }, '', cart)
 
-    if(result.message == 'success') return true
-    return false
+    console.log(response);
+
+    if(!response.success)  {
+        alert(response.message)
+        return false
+    }
+    return true
+}
+
+export async function buyFlight (user : IUser, flightID : string, flightSeatID : string, extraLuggage : number, method : string, cartID : string) {
+    const flightTicket : IFlightTicket = {
+        TicketID: v4(),
+        UserRefer: user.ID,
+        FlightRefer: flightID,
+        FlightSeatRefer: flightSeatID,
+        ExtraLuggage : extraLuggage,
+        Method: method
+    }
+
+    const response = await service.request({
+        url: Paths.CREATE_FLIGHTTICKET + "/" + user.Email,
+        method: Method.POST
+    }, cartID, flightTicket)
+
+    if(response.success) return true
+    else {
+        alert(response.message)
+        return false
+    }
+}
+
+export async function removeCartFlight(cartID : string){
+    const response = await service.request({
+        url: Paths.DELETE_CARTFLIGHTTICKET, 
+        method: Method.DELETE
+    }, cartID)
+
+    if(response.success) return true
+    else {
+        alert(response.message)
+        return false
+    }
+}
+
+export async function buyNowFlight(flight : IFlightResponse, extraLuggage : number, seat : IFlightSeat, method : string, user : IUser){
+    const ticket : IFlightTicket = {
+        TicketID: v4(),
+        FlightRefer: flight.FlightID,
+        ExtraLuggage: extraLuggage,
+        FlightSeatRefer: seat.FlightSeatID,
+        Method: method,
+        UserRefer: user.ID
+    }
+
+    const response = await service.request({
+        url: Paths.BUY_FLIGHT,
+        method: Method.POST
+    }, '', ticket)
+
+    console.log(response);
+
+    if(response.success) return true
+    else {
+        alert(response.message)
+        return false
+    }
 }

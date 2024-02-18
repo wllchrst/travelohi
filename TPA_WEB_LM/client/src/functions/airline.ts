@@ -10,11 +10,15 @@ export const createAirline = async (airline : IAirline, file : File) => {
     const link = await FirebaseUtil.PostImage(file)
     airline.PictureLink = link
     try {
-        await service.request({
+        const response = await service.request({
             url: Paths.CREATE_AIRLINE,
             method: Method.POST
-        }, '', airline)   
-
+        }, '', airline)
+        
+        if(!response.success) {
+            alert(response.message)
+            return false
+        }
         return true
     } catch (error) {
         return false

@@ -1,0 +1,22 @@
+
+register 
+[] email to inform
+[] recaptcha
+[] subscribe to news letter
+
+
+login 
+[] recaptcha
+
+
+admin
+[] send email to all accounts that subscribe to new letter
+
+[] buy now hotel
+[] buy now flight
+[] ticket page 
+[] history page
+[] profile page
+[] searching
+[] filtering
+[] location 

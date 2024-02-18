@@ -19,11 +19,11 @@ const Overlay = styled.div`
     align-items: center;
 `;
 
-const ModalContainer = styled.div`
-    background: #fff;
+const ModalContainer = styled.div` 
+    background-color: ${p => p.theme.primary};
     padding: 20px;
     border-radius: 8px;
-    max-width: 400px;
+    max-width: 800px;
     width: 100%;
 `;
 

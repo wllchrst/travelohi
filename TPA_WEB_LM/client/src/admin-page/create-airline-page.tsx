@@ -15,7 +15,7 @@ export default function CreateAirline () {
     const submitHandle = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         if(file) createAirline(airline, file).then((result) => {
-            console.log(result);
+            if(result) window.location.reload()
         })
     }
 
