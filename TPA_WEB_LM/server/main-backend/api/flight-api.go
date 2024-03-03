@@ -34,4 +34,7 @@ func CreateFlightAPI() {
 	engine.GET(enums.FLIGHT_RECOMMENDATION, flights.GetFlightRecommendation)
 
 	engine.GET(enums.HISTORY_FLIGHT_TICKET, flights.HistoryViewFlightTicket)
+
+	engine.POST(enums.FILTER_FLIGHTS, flights.FilterFlights)
+	engine.GET(enums.SEARCH_FLIGHTS, flights.SearchFlight)
 }

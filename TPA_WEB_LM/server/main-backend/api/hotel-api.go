@@ -43,4 +43,7 @@ func CreateHotelAPI() {
 	engine.PATCH(enums.UPDATE_REVIEW, hotel.UpdateReview)
 	engine.DELETE(enums.DELETE_REVIEW, hotel.DeleteReview)
 	engine.POST(enums.CREATE_REVIEW, hotel.CreateReview)
+
+	engine.GET(enums.FILTER_HOTELS, hotel.FilterHotel)
+	engine.GET(enums.SEARCH_HOTELS, hotel.SearchHotel)
 }

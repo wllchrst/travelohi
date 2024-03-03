@@ -18,7 +18,7 @@ import Paths from "../enums/api-paths";
 import { Method } from "../enums/method-enum";
 
 
-export class Game { 
+export class Game {
     // FPS Variables
     now : number = 0
     then : number = 0
@@ -57,7 +57,7 @@ export class Game {
         this.fps = 30
         this.fpsInterval = 1000 / this.fps
         this.then = Date.now()
-        this.startTime = this.then 
+        this.startTime = this.then
     }
 
     static getInstance (canvas : HTMLCanvasElement | null, user : IUser) {
@@ -102,8 +102,13 @@ export class Game {
         window.location.href = "/"
     }
 
+    something(){
+        const service = new Service();
+        service.request
+    }
+
     checkSomeoneDied() {
-        if(!this.player) return 
+        if(!this.player) return
         else if(!this.secondPlayer) return
         else if(!this.timer) return
         const playerID = Server.getInstance().playerID
@@ -129,7 +134,7 @@ export class Game {
 
         this.now = Date.now()
         this.elapsed = this.now - this.then
-        
+
         if(this.elapsed > this.fpsInterval) {
             this.then = this.now - (this.elapsed - this.fpsInterval)
             this.updateHealthBar()
@@ -153,7 +158,7 @@ export class Game {
         }
     }
 
-    updateHealthBar (){ 
+    updateHealthBar (){
         if(this.secondHealthBar && this.secondPlayer) {
             this.secondHealthBar.healthPercentage = this.secondPlayer.health / Settings.HEALTH
         }
@@ -174,7 +179,7 @@ export class Game {
             this.updateChanges(data)
         })
     }
-    
+
     static stop(){
         if(this.instance) {
             this.instance.gameRunning = false

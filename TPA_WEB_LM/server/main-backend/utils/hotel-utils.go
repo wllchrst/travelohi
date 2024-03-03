@@ -256,3 +256,17 @@ func ValidateReview(review models.Review) error {
 
 	return nil
 }
+
+func CalculateRating(hotel models.Hotel) int {
+	if len(hotel.Ratings) <= 0 {
+		return -1
+	}
+
+	average := 0
+
+	for _, rating := range hotel.Ratings {
+		average += rating.Rate
+	}
+
+	return average / len(hotel.Ratings)
+}

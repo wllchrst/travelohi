@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/smtp"
 	"regexp"
 	"time"
 
 	"github.com/nosurprisesplz/tpa-web-backend/models"
 	"golang.org/x/crypto/bcrypt"
-	"gopkg.in/mail.v2"
 )
 
 func ValidatePassword(inputPassword string, password string) bool {
@@ -29,9 +29,19 @@ func CalculateAge(dob time.Time) bool {
 	fmt.Println(age)
 	return age >= 13
 }
+
+func validateName(name string) bool {
+	// Check if the length of the name is more than 5 characters
+
+	return true
+}
 func ValidateUser(user models.User) error {
 	if user.Email == "" {
-		return errors.New("Email is required")
+		return errors.New("email is required")
+	}
+
+	if len(user.Password) < 8 || len(user.Password) > 30 {
+		return errors.New("Password length must be between 8 and 30 characters")
 	}
 
 	err := ValidateEmail(user.Email)
@@ -40,32 +50,51 @@ func ValidateUser(user models.User) error {
 		return err
 	}
 
+	if len(user.FirstName) <= 5 {
+		return errors.New("first name length more than 5")
+	}
+
+	if len(user.LastName) <= 5 {
+		return errors.New("last name length more than 5")
+	}
+
+	// Check if the name contains symbols or numbers
+	matched, _ := regexp.MatchString(`[^a-zA-Z]`, user.LastName)
+	if matched {
+		return errors.New("name cannot contain characters other than alphabet")
+	}
+
+	matched, _ = regexp.MatchString(`[^a-zA-Z]`, user.FirstName)
+	if matched {
+		return errors.New("name cannot contain characters other than alphabet")
+	}
+
 	if user.Password == "" {
-		return errors.New("Password is required")
+		return errors.New("password is required")
 	}
 	if user.FirstName == "" {
-		return errors.New("FirstName is required")
+		return errors.New("firstName is required")
 	}
 	if user.LastName == "" {
-		return errors.New("LastName is required")
+		return errors.New("lastName is required")
 	}
 	if user.DOB.IsZero() {
-		return errors.New("DOB is required")
+		return errors.New("dOB is required")
 	}
 	if user.Gender == "" {
-		return errors.New("Gender is required")
+		return errors.New("gender is required")
 	}
 	if user.ProfilePictureLink == "" {
-		return errors.New("ProfilePictureLink is required")
+		return errors.New("profilePictureLink is required")
 	}
 	if user.PersonalSecurityQuestion == "" {
-		return errors.New("PersonalSecurityQuestion is required")
+		return errors.New("personalSecurityQuestion is required")
 	}
 	if user.PersonalSecurityAnswer == "" {
-		return errors.New("PersonalSecurityAnswer is required")
+		return errors.New("personalSecurityAnswer is required")
 	}
 	if user.Role == "" {
-		return errors.New("Role is required")
+		return errors.New("role is required")
 	}
 
 	if !(user.PersonalSecurityQuestion == "What is your favorite childhood pet's name" || user.PersonalSecurityQuestion == "In which city where you born" || user.PersonalSecurityQuestion == "What is the name of your favorite book or movie?" || user.PersonalSecurityQuestion == "What is the name of the elementary school you attended?" || user.PersonalSecurityQuestion == "What is the model of your first car?") {
@@ -98,27 +127,26 @@ func isValidEmail(email string) bool {
 	return match
 }
 
-func EmailUser(fromEmail string, toEmail string, message string) {
-	sender := mail.NewMessage()
-	sender.SetHeader("From", fromEmail)
-	sender.SetHeader("To", toEmail)
-	sender.SetHeader("Subject", "Registration Information")
+func SendEmail(subject string, body string, recipientEmail string) {
+	from := "williamqwerty3@gmail.com"
+	password := "kwra fvom bvqr fqhe"
 
-	sender.SetBody("text/plain", message)
-	dialer := mail.NewDialer(
-		"smtp.gmail.com",           // SMTP server address
-		587,                        // Port for the SMTP server (587 is commonly used for TLS)
-		"williamqwerty3@gmail.com", // Your email address
-		"AllApologies710",          // Your email password
-	)
+	to := recipientEmail
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
 
-	if err := dialer.DialAndSend(sender); err != nil {
+	message := []byte("Subject: " + subject + "\r\n" +
+		"\r\n" + body)
+
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{to}, message)
+	if err != nil {
 		log.Fatal(err)
-	} else {
-		log.Println("Email sent successfully!")
 	}
-}
 
+	log.Println("Email sent successfully!")
+}
 func ValidateEmail(email string) error {
 	// Regular expression pattern for email validation
 	pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`

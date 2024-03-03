@@ -3,6 +3,8 @@ package hotel
 import (
 	"fmt"
 	"net/http"
+	"regexp"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nosurprisesplz/tpa-web-backend/database"
@@ -203,4 +205,78 @@ func GetHotelRecommendation(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, utils.DataResponse(hotels, "mantap", true))
+}
+
+func FilterHotel(context *gin.Context) {
+	var filter models.HotelFilter
+	var err error
+	var hotels []models.Hotel
+	var filteredHotels []models.Hotel
+	db := database.GetDB()
+
+	result := db.Preload("Location").Preload("Ratings").Preload("Reviews").Preload("HotelPictures").Preload("HotelFacilities").Find(&hotels)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
+		return
+	}
+
+	filterString := context.Query("Filtering")
+	mediumString := context.Query("MediumRating")
+	highString := context.Query("HighRating")
+	minString := context.Query("PriceMinimum")
+	maxString := context.Query("PriceMaximum")
+
+	filter.PriceMinimum, err = strconv.Atoi(minString)
+	fmt.Println(err)
+	if err != nil {
+		filter.PriceMinimum = -1
+	}
+
+	filter.PriceMaximum, err = strconv.Atoi(maxString)
+	fmt.Println(err)
+	if err != nil {
+		filter.PriceMaximum = -1
+	}
+
+	filter.Filtering = filterString == "true"
+	filter.MediumRating = mediumString == "true"
+	filter.HighRating = highString == "true"
+
+	fmt.Println(hotels)
+
+	if !filter.Filtering {
+		context.JSON(http.StatusOK, utils.DataResponse(hotels, "filtered hotels", true))
+		return
+	}
+
+	for _, hotel := range hotels {
+		filteredHotels = append(filteredHotels, hotel)
+	}
+
+	context.JSON(http.StatusOK, utils.DataResponse(filteredHotels, "Filtering data", true))
+}
+
+func SearchHotel(context *gin.Context) {
+	query := context.Param("query")
+	var hotels []models.Hotel
+	var filteredHotels []models.Hotel
+
+	db := database.GetDB()
+
+	result := db.Preload("Location").Preload("Ratings").Preload("Reviews").Preload("HotelPictures").Preload("HotelFacilities").Find(&hotels)
+
+	if result.Error != nil {
+		context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
+		return
+	}
+
+	for _, hotel := range hotels {
+		pattern := regexp.MustCompile(`.*` + regexp.QuoteMeta(query) + `.*`)
+		if pattern.MatchString(hotel.HotelName) {
+			filteredHotels = append(filteredHotels, hotel)
+		}
+	}
+
+	context.JSON(http.StatusOK, utils.DataResponse(filteredHotels, "searching", true))
 }

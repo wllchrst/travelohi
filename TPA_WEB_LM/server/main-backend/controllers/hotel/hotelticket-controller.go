@@ -79,6 +79,13 @@ func CreateHotelTicket(context *gin.Context) {
 	totalPrice := room.Price * days
 
 	if model.Method == enums.Credit {
+		isRegistered := utils.CreditCardIsRegistered(model.UserRefer)
+
+		if !isRegistered {
+			context.JSON(http.StatusOK, utils.Response("Your credit card is not registered", false))
+			return
+		}
+
 		result = db.Delete(&cart)
 		if result.Error != nil {
 			context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))

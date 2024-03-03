@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/navbar.scss"
 import logoImage from "../assets/logo.png"
 import searchIcon from "../assets/searchIcon.png"
@@ -15,6 +15,12 @@ import useFetchUser from "../hooks/use-fetch-user";
 import useUserLogout from "../hooks/use-logout";
 import styled from "styled-components";
 import useCurrencyContext from "../hooks/use-currency-context";
+import { ResultWrapper } from "./wrapper/search-recommendation";
+import { Container } from "./wrapper/container";
+import { PrimaryBackground } from "./wrapper/secondary";
+import Input from "./wrapper/input";
+import useSearchResult from "../hooks/use-search-result";
+import { BottomContainer, ColorContainer, LinkContainer, NavbarContainer } from "./wrapper/navbar-container";
 
 const unitedState : ICurrency = {
     imagePath: us,
@@ -29,34 +35,10 @@ export default function Navbar() {
     const [currency, setCurrency] = useState<ICurrency>(unitedState)
     const { changeCurrency } = useCurrencyContext()
     const [isDropDown, setDropDown] = useState(false)
-    const NavbarContainer = styled.div`
-        background-color: ${(props) => props.theme.secondary};
-        color: ${props => props.theme.font};
-    `
+    const [searching, setSearching] = useState(false)
+    const { results, recommendation, setQuery, query }= useSearchResult()
 
-    const BottomContainer = styled.div`
-        background-color: ${props => props.theme.accent};
-        color: ${props => props.theme.font};
-    `
-    const ColorContainer = styled.div`
-        text-decoration: none;
-        color: ${props => props.theme.font};
-        p {
-            color: ${props => props.theme.font};
-        }
-    `
-
-    const LinkContainer = styled.div`
-        padding: 1rem 2rem;
-        border-right: 0.125px solid black;
-        color: ${props => props.theme.font};
-        text-decoration: none;
-        font-size: large;
-        .link-nodeco {
-            text-decoration: none;
-            color: ${p => p.theme.font};
-        }
-    `
+    const navigate = useNavigate()
 
     const userContext = useUserAuth()
     
@@ -69,9 +51,25 @@ export default function Navbar() {
                         <img className="logo" src={logoImage} alt="" />
                     </Link>
                     {/* SEARCH BAR */}
-                    <div className="search-container">
-                        <input type="text" />
-                        <img src={searchIcon} alt="" />
+                    {/* onBlur={() => setSearching(false)} */}
+                    <div className="relative z100" >
+                        <div className="search-container relative"  onFocus={() => {
+                            setSearching(true)
+                        }}>
+                            <Input type="text" onChange={(o) => setQuery(o.target.value)}/>
+                            <img src={searchIcon} alt="" onClick={() => {
+                                navigate("/search/" + query)
+                            }}/>
+                        </div>
+                        {searching && 
+                            <div className="w-100per absolute flex flex-col border-radius-5 background-white mt-05">
+                                {results.map((result, index) => (
+                                    <ResultWrapper onClick={() => {
+                                        navigate("/search/" + result)
+                                    }} key={index}>{result}</ResultWrapper>
+                                ))}
+                            </div>
+                        }
                     </div>
                     {/* CART */}
                     <ColorContainer>

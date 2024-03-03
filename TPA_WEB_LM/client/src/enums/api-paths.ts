@@ -91,7 +91,18 @@ GET_LOCATIONS = host + '/get_locations',
     UPDATE_CREDITCARD = host + "/update_creditcard",
     DELETE_CREDITCARD = host + "/delete_creditcard",
     CREATE_CREDITCARD = host + "/create_creditcard",
-    ADD_BALANCE = host + "/add_balance"
+    ADD_BALANCE = host + "/add_balance",
+
+    FILTER_FLIGHTS = host + "/filter-flights",
+    FILTER_HOTELS = host + "/filter-hotels",
+    GET_OTP = host + "/get-otp",
+	OTP_LOGIN = host + "/login-otp",
+    SEARCH_RECOMMENDATION = host + "/search-recommendation",
+    SEARCH_QUERY = host + "/search-query",
+    SEARCH_FLIGHTS = host + "/filter-flights",
+	SEARCH_HOTELS= host + "/filter-hotels",
+    ADD_SEARCH_HISTORY = host + "/add-search-history",
+    ADMIN_EMAIL = host + "/admin-email"
 }
 
 

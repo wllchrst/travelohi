@@ -20,7 +20,7 @@ export default function AddCreditCard ({ user } : I) {
 
     const submitHandle = () => {
         createCreditCart(user, first).then((result) => {
-            console.log(result);
+            if(result) window.location.reload()
         })
     }
 

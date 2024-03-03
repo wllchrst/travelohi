@@ -20,5 +20,12 @@ func CreateUserAPI() {
 	engine.POST(enums.UPDATE_USER_INFORMATION, user.UpdateUserInformation)
 
 	engine.POST(enums.ADD_BALANCE, user.AddUserWallet)
-	
+	engine.GET(enums.GET_OTP, user.GetOTP)
+	engine.GET(enums.OTP_LOGIN, user.LoginUsingOTP)
+
+	engine.GET(enums.SEARCH_RECOMMENDATION, user.Recommendation)
+	engine.GET(enums.SEARCH_QUERY, user.SearchQuery)
+
+	engine.POST(enums.ADD_SEARCH_HISTORY, user.AddSearchHistory)
+	engine.POST(enums.ADMIN_EMAIL, user.AdminSendEmail)
 }

@@ -19,16 +19,27 @@ import { Title } from "../components/wrapper/title"
 import { BorderedContainer } from "../components/wrapper/bordered-container"
 import useFetchUser from "../hooks/use-fetch-user"
 import ReCAPTCHA from 'react-google-recaptcha';
+import Modal from "../components/hotels/modal"
+import OTPLogin from "../components/user/login-with-otp"
 export default function Login() {
     const [user, setUser] = useState({ } as ILoginData)
     const [file, setFile] = useState<File>()
     const navigate = useNavigate()
     const userContext = useUserAuth()
-    const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null);
+    const [verified, setverified] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    }
 
     const handleRecaptchaChange = (value : string | null) => {
         // Store the reCAPTCHA value in the component state
-        setRecaptchaValue(value);
+        setverified(value != null)
     };
 
     useEffect(() => {
@@ -57,7 +68,10 @@ export default function Login() {
 
     const submitHandle = (event : FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-
+        if(verified == false) {
+            alert("Please fill in the recaptcha")
+            return
+        }
         loginUser().then((result) => {
             if(result.data) {
                 Cookies.set("token", result.data)
@@ -79,10 +93,14 @@ export default function Login() {
                         <Input placeholder="Password" type="password" name="Password" onChange={changeHandle}></Input>
                         <ReCAPTCHA
                             className="w-full"
-                            sitekey="6LdhFmYpAAAAACqwRNApdRx3Fe3ihp0QxxFdia8L"
+                            sitekey="6LcEOIEpAAAAAJXLxpXzyXxCCitLILntvgW9RoTc"
                             onChange={handleRecaptchaChange}
                             />
                         <Button type="submit" className="center">Login</Button>
+                        <Button onClick={(o) => {
+                            o.preventDefault()
+                            openModal()
+                        }} type="submit" className="center">OTP Login</Button>
                     </form>
                     <div className="center flex-col">
                         <Link to={"/register"} className="link underline-effects">Register New Account</Link>
@@ -90,6 +108,9 @@ export default function Login() {
                     </div>
                 </PrimaryBackground>
             </div>
+            <Modal onClose={closeModal} isOpen={isModalOpen}>
+                <OTPLogin/>
+            </Modal>
         </PrimaryBackground>
         
     )

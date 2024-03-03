@@ -11,6 +11,7 @@ import { IUser } from "../interfaces/user-interface";
 import IFlightResponse from "../interfaces/flight-response-interface";
 import ICartFlightTicket from "../interfaces/cart-flight-interface";
 import IFlightTicket from "../interfaces/flight-ticket-interface";
+import IFlightFilter from "../interfaces/flight-filter-interface";
 
 const service = new Service()
 
@@ -201,4 +202,49 @@ export async function buyNowFlight(flight : IFlightResponse, extraLuggage : numb
         alert(response.message)
         return false
     }
+}
+
+export function filterFlight(filter : IFlightFilter, flights : IFlightResponse[], setFlights : React.Dispatch<React.SetStateAction<IFlightResponse[]>> ) {
+    const filteredFlights = flights.filter(flight => {
+        // Check if flight has transits if IsTransit filter is provided
+        if (filter.IsTransit !== null) {
+            const hasTransits = flight.Transits.length > 0;
+            if (filter.IsTransit !== hasTransits) {
+                return false;
+            }
+        }
+
+        // Check if flight has the desired number of transits if NumberOfTransit filter is provided
+        if (filter.NumberOfTransit !== null) {
+            if (flight.Transits.length > filter.NumberOfTransit) {
+                return false;
+            }
+        }
+
+        
+
+        // Add more conditions for other filters as needed
+        
+        // Example:
+        // Check if flight duration is within the specified range
+        // if (filter.Duration !== undefined) {
+        //     const flightDuration = flight.ArrivalTime - flight.DepartureTime.getTime();
+        //     if (flightDuration < filter.Duration) {
+        //         return false;
+        //     }
+        // }
+
+        // Check if flight price is within the specified range
+        // if (filter.PriceMinimum !== undefined && filter.PriceMaximum !== undefined) {
+        //     const flightPrice = // calculate flight price
+        //     if (flightPrice < filter.PriceMinimum || flightPrice > filter.PriceMaximum) {
+        //         return false;
+        //     }
+        // }
+
+        // If the flight passes all the filter conditions, return true
+        return true;
+    });
+
+    setFlights(filteredFlights)
 }

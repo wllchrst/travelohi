@@ -7,8 +7,7 @@ interface I {
 export default function PriceWrapper ( { price } : I) {
     const { currencyFront, currencyMultiplier } = useCurrencyContext()
     const priceDisplay = `${currencyFront} ${price * currencyMultiplier}`
-    console.log(currencyFront);
-    console.log(currencyMultiplier);
+
     return (
         <p>{priceDisplay}</p>
     )

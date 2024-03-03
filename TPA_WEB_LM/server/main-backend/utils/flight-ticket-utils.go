@@ -9,7 +9,7 @@ import (
 	"github.com/nosurprisesplz/tpa-web-backend/models"
 )
 
-func ValidateFlightTicket(flightTicket models.FlightTicket) error {
+func ValidateFlightTicket(flightTicket models.FlightTicket, cart bool) error {
 	if flightTicket.TicketID == "" {
 		return errors.New("TicketID is required")
 	}
@@ -35,7 +35,7 @@ func ValidateFlightTicket(flightTicket models.FlightTicket) error {
 		return result.Error
 	}
 
-	if !seat.IsAvalaible {
+	if !seat.IsAvalaible && !cart {
 		return errors.New("seat is not available")
 	}
 

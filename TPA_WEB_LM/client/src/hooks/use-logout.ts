@@ -8,7 +8,6 @@ export default function useUserLogout (userId : string){
     const service = new Service();
 
     const logOut = async () => {
-
         await service.request({
             url: Paths.LOGOUT,
             method: Method.GET

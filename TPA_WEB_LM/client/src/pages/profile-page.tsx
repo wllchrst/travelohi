@@ -15,9 +15,11 @@ import Service from "../utils/service";
 import Paths from "../enums/api-paths";
 import { Method } from "../enums/method-enum";
 import AddCreditCard from "../components/user/add-credit-cart-information";
+import CreditCardCard from "../components/user/credit-card-card";
 
 export default function ProfilePage () {
     const { user } = useUserAuth()
+    console.log(user)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [secondModal, setSecondModal] = useState(false);
 
@@ -67,6 +69,13 @@ export default function ProfilePage () {
                         <FlexGap className="larger">Subscribed : {user.IsSubscribed ? "Yes" : "No"}</FlexGap>
                     </div>
                 </div>
+                {user.CreditCards && 
+                    <div className="flex flex-col gap-2">
+                        {user.CreditCards.map((credit, index) => (
+                            <CreditCardCard credit={credit} key={index}></CreditCardCard>
+                        ))}
+                    </div>
+                }
                 <div className="flex gap-1">
                     <Button onClick={() => openModal()}>Update User Information</Button>
                     <Button onClick={() => setSecondModal(true)}>Add Credit Card</Button>

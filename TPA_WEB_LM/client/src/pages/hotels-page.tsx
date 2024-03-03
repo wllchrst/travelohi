@@ -9,6 +9,6 @@ export default function Hotels () {
     if(isLoading) return <Loading></Loading>
 
     return (
-        <ViewHotel></ViewHotel>
+        <ViewHotel searchHotel={null}></ViewHotel>
     )
 }

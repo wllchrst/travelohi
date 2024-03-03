@@ -281,6 +281,22 @@
     border-radius: 10px;
 }
 
+.background-white{
+    background-color: white;
+}
+
+.mt-05 {
+    margin-top: 0.5rem;
+}
+
+.z100 {
+    z-index: 100;
+}
+
+.pb-0 {
+    padding-bottom: 0;
+}
+
 .border-radius-5 {
     border-radius: 5px;
 }
@@ -316,3 +332,10 @@
     padding: 1rem;
 }
 
+.relative {
+    position: relative;
+}
+
+.absolute{
+    position: absolute;
+}

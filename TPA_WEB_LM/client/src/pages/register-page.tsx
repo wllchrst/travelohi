@@ -15,12 +15,20 @@ import { Link, useNavigate } from "react-router-dom"
 import { PrimaryBackground, SecondaryColor } from "../components/wrapper/secondary"
 import { FlexGap } from "../components/wrapper/FlexGap"
 import { useUserAuth } from "../contexts/user-context"
+import ReCAPTCHA from "react-google-recaptcha"
 
 export default function Register () {
     const [user, setUser] = useState({ IsSubscribed: false } as IUser)
     const [file, setFile] = useState<File>()
     const navigate = useNavigate()
     const userContext = useUserAuth()
+    const [verified, setverified] = useState(false)
+
+    const handleRecaptchaChange = (value : string | null) => {
+        // Store the reCAPTCHA value in the component state
+        setverified(value != null)
+    };
+
     useEffect(() => {
         if(userContext.isAuth()) {
             navigate('/home')
@@ -48,6 +56,10 @@ export default function Register () {
         event.preventDefault()
         if(!file) {
             alert("you need to input every field")
+            return
+        }
+        else if(!verified) {
+            alert("You need to fill in the recaptcha")
             return
         }
         
@@ -105,7 +117,8 @@ export default function Register () {
                                 }
                             }}></Input>
                         </div>
-                        <Select name="PersonalSecurityQuestion" id="" onChange={changeHandle} value={personalQuestion[0]}>
+                        <Select name="PersonalSecurityQuestion" id="" onChange={changeHandle}>
+                            <option>Choose Peronsal Security Question</option>
                             {personalQuestion.map((question, index) => (
                                 <Option value={question} key={index}>{question}</Option>
                             ))}
@@ -120,6 +133,11 @@ export default function Register () {
                             }}/>
                             <p>Subscribe to News Letter</p>
                         </FlexGap>
+                        <ReCAPTCHA
+                            className="w-full"
+                            sitekey="6LcEOIEpAAAAAJXLxpXzyXxCCitLILntvgW9RoTc"
+                            onChange={handleRecaptchaChange}
+                            />
                         <Button type="submit">Register</Button>
                     </form>
                     <div className="center">

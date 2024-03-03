@@ -6,7 +6,7 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     background-color: ${p => p.theme.primary};
-    box-shadow: 5px 5px 10px ${p => p.theme.shadow};
+    box-shadow: 3px 3px 7px ${p => p.theme.shadow};
 `
 export const Shadowed = styled.div`
     box-shadow: 5px 5px 10px ${p => p.theme.shadow};

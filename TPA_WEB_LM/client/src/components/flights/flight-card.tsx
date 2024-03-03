@@ -38,7 +38,7 @@ export default function FlightCard ({ flight  } : IFlightCard) {
                             <img src={flight.Airline.PictureLink} alt="" />
                         </HotelImageDiv>
                     </div>
-                    <p>Lion Air</p>
+                    <p>{flight.Airline.AirlineName}</p>
                 </div>
                 <div className="general-right-container">
                     {/* time */}

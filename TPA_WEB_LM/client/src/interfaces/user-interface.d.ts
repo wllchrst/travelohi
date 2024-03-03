@@ -1,3 +1,5 @@
+import ICreditCard from "./credit-card-interface"
+
 export interface IUser {
     ID                       : string 
     Email                    : string
@@ -12,6 +14,7 @@ export interface IUser {
     Banned : boolean 
     IsLoggedIn               :boolean
 	IsSubscribed             :boolean
+    CreditCards: ICreditCard[]
 }
 
 export interface ILoginData {

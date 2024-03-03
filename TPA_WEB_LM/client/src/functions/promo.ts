@@ -18,6 +18,8 @@ export async function createPromo(promo : IPromo, pictureFile : File){
             method: Method.POST
         }, '', promo)
 
+        console.log(response);
+
         if(!response.success) {
             alert(response.message)
             return false

@@ -2,4 +2,28 @@
 //
 // For a full list of overridable settings, and general information on folder-specific settings,
 // see the documentation: https://docs.zed.dev/configuration/configuring-zed#folder-specific-settings
-{}
+{
+  "theme": "Atelier Cave Dark",
+  "tab_size": 4,
+  "preferred_line_length": 80,
+  "soft_wrap": "none",
+
+  "buffer_font_size": 18,
+  "buffer_font_family": "Zed Mono",
+
+  "autosave": "on_focus_change",
+  "format_on_save": "off",
+  "vim_mode": false,
+  "projects_online_by_default": true,
+  "terminal": {
+    "font_family": "FiraCode Nerd Font Mono",
+    "blinking": "off"
+  },
+  "language_overrides": {
+    "C": {
+      "format_on_save": "language_server",
+      "preferred_line_length": 64,
+      "soft_wrap": "preferred_line_length"
+    }
+  }
+}

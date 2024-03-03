@@ -111,6 +111,8 @@ func CreateUser(context *gin.Context) {
 
 	// utils.EmailUser(createUser.Email, "williamqwerty3@gmail.com", "bitch")
 
+	utils.SendEmail("Register Information", "You have successfully registered your account", createUser.Email)
+
 	context.JSON(200, gin.H{
 		"success": true,
 	})
@@ -179,8 +181,6 @@ func UpdatePassword(context *gin.Context) {
 	context.Bind(&updatePassword)
 	result := db.Find(&user, "email = ?", updatePassword.Email)
 
-	fmt.Println(updatePassword)
-
 	if result.Error != nil {
 		context.AbortWithStatusJSON(http.StatusOK, gin.H{
 			"success": false,
@@ -202,7 +202,12 @@ func UpdatePassword(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusOK, utils.Response("password doesnt match", false))
 		return
 	}
-	if user.Password == updatePassword.NewPassword {
+
+	hashed, _ := bcrypt.GenerateFromPassword([]byte(updatePassword.NewPassword), bcrypt.DefaultCost)
+
+	matched := utils.ValidatePassword(updatePassword.NewPassword, user.Password)
+
+	if matched {
 		context.AbortWithStatusJSON(http.StatusOK, utils.Response("password same with old password", false))
 		return
 	}
@@ -211,8 +216,6 @@ func UpdatePassword(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusOK, utils.Response("wrong personal security answer", false))
 		return
 	}
-
-	hashed, _ := bcrypt.GenerateFromPassword([]byte(updatePassword.NewPassword), bcrypt.DefaultCost)
 
 	user.Password = string(hashed)
 
@@ -307,4 +310,32 @@ func AddUserWallet(context *gin.Context) {
 	db.Save(&user)
 
 	context.JSON(http.StatusOK, utils.Response("ok", true))
+}
+
+func AdminSendEmail(context *gin.Context) {
+	db := database.GetDB()
+	var email models.Email
+	var users []models.User
+
+	result := db.Find(&users)
+
+	if result.Error != nil {
+		context.JSON(200, utils.Response(result.Error.Error(), false))
+		return
+	}
+
+	context.Bind(&email)
+
+	fmt.Println(email)
+
+	if email.Body == "" || email.Subject == "" {
+		context.JSON(http.StatusBadRequest, utils.Response("Body and Subject cannot be emtpy", false))
+		return
+	}
+
+	for _, user := range users {
+		utils.SendEmail(email.Body, email.Subject, user.Email)
+	}
+
+	context.JSON(200, utils.Response("mantap", true))
 }

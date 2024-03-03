@@ -31,19 +31,13 @@ export default function UpdateUserInformation ({ user } : I) {
                 url: Paths.UPDATE_USER_INFORMATION,
                 method: Method.POST
             }, '', updateUser).then((response) => {
+                console.log(response);
                 if(!response.success) alert(response.message)
                 else window.location.reload()
             })
+
             return
         })
-
-        service.request({
-                url: Paths.UPDATE_USER_INFORMATION,
-                method: Method.POST
-            }, '', updateUser).then((response) => {
-                if(!response.success) alert(response.message)
-                else window.location.reload() 
-            })
     }
 
 

@@ -23,7 +23,7 @@ type User struct {
 	IsLoggedIn               bool
 	IsSubscribed             bool
 	Wallet                   float32
-	CreditCard               CreditCard `gorm:"foreignKey:UserRefer"`
+	CreditCards               []CreditCard `gorm:"foreignKey:UserRefer"`
 }
 
 type LoginUser struct {

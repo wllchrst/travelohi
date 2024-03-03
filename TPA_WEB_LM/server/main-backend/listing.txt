@@ -1,22 +1,21 @@
+for revisi 2
 
-register 
-[] email to inform
-[] recaptcha
-[] subscribe to news letter
-
-
-login 
-[] recaptcha
+done
+- show credit card
+- airline g boleh sama
+- check dah ada credit card g
 
 
-admin
-[] send email to all accounts that subscribe to new letter
+to do 
+- search component
+- show hotel description
+- pake modelnya
+- show review
 
-[] buy now hotel
-[] buy now flight
-[] ticket page 
-[] history page
-[] profile page
-[] searching
-[] filtering
-[] location 
+dari exel
+[] OTP 
+[] Email 
+
+[] Seach Component 
+[] Seach Result
+[] 

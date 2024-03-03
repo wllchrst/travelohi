@@ -17,7 +17,7 @@ func CreateFlightTicket(context *gin.Context) {
 	db := database.GetDB()
 	context.Bind(&model)
 
-	err := utils.ValidateFlightTicket(model)
+	err := utils.ValidateFlightTicket(model, true)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, utils.Response(err.Error(), false))
@@ -81,10 +81,18 @@ func CreateFlightTicket(context *gin.Context) {
 
 		context.JSON(200, utils.Response("Thank you for buying with HI Wallet", true))
 	} else {
+		isRegistered := utils.CreditCardIsRegistered(model.UserRefer)
+
+		if !isRegistered {
+			context.JSON(http.StatusBadRequest, utils.Response("Your credit card is not registered", false))
+			return
+		}
+
 		result := db.Create(&model)
 
 		if result.Error != nil {
 			context.JSON(http.StatusInternalServerError, utils.Response(result.Error.Error(), false))
+			return
 		}
 
 		result = db.Delete(&cart)
@@ -111,7 +119,7 @@ func BuyFlight(context *gin.Context) {
 	// validate flight
 	context.Bind(&ticket)
 
-	err := utils.ValidateFlightTicket(ticket)
+	err := utils.ValidateFlightTicket(ticket, false)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, utils.Response(err.Error(), false))

@@ -98,4 +98,19 @@ const (
 	CREATE_CREDITCARD     = "/create_creditcard"
 
 	ADD_BALANCE = "/add_balance/:id"
+
+	FILTER_FLIGHTS = "/filter-flights"
+	FILTER_HOTELS  = "/filter-hotels"
+
+	SEARCH_FLIGHTS = "/filter-flights/:query"
+	SEARCH_HOTELS  = "/filter-hotels/:query"
+
+	GET_OTP   = "/get-otp/:email"
+	OTP_LOGIN = "/login-otp/:otp"
+
+	SEARCH_RECOMMENDATION = "/search-recommendation/:email"
+	SEARCH_QUERY          = "/search-query/:query"
+
+	ADD_SEARCH_HISTORY = "/add-search-history"
+	ADMIN_EMAIL        = "/admin-email"
 )
